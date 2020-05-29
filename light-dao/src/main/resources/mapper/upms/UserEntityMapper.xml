@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiqunar.light.dao.upms.UserMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.jiqunar.light.model.entity.upms.UserEntity">
+                <result column="id" property="id" />
+                <result column="creater_id" property="createrId" />
+                <result column="creater_name" property="createrName" />
+                <result column="create_date" property="createDate" />
+                <result column="updater_id" property="updaterId" />
+                <result column="updater_name" property="updaterName" />
+                <result column="update_date" property="updateDate" />
+                <result column="is_deleted" property="isDeleted" />
+                    <result column="user_name" property="userName" />
+                    <result column="password" property="password" />
+                    <result column="nick_name" property="nickName" />
+                    <result column="avatar_url" property="avatarUrl" />
+                    <result column="gender" property="gender" />
+                    <result column="phone" property="phone" />
+                    <result column="email" property="email" />
+                    <result column="dept_id" property="deptId" />
+                    <result column="job_id" property="jobId" />
+                    <result column="visit_date" property="visitDate" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+                id,
+                creater_id,
+                creater_name,
+                create_date,
+                updater_id,
+                updater_name,
+                update_date,
+                is_deleted,
+            user_name, password, nick_name, avatar_url, gender, phone, email, dept_id, job_id, visit_date
+        </sql>
+
+</mapper>
