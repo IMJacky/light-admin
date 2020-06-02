@@ -1,6 +1,7 @@
 package com.jiqunar.light.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
@@ -35,7 +36,7 @@ public class LightUpmsMybatisConfig {
     @ConfigurationProperties(prefix = "spring.datasource.lightupms")
     @Primary
     public DataSource upmsDataSource() {
-        return new DruidDataSource();
+        return DruidDataSourceBuilder.create().build();
     }
 
     @Bean(name = "upmsSqlSessionFactory")
@@ -49,7 +50,7 @@ public class LightUpmsMybatisConfig {
         MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         configuration.setJdbcTypeForNull(JdbcType.NULL);
-        configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
+        //configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);//sql输出到控制台
         bean.setConfiguration(configuration);
         return bean.getObject();
     }
