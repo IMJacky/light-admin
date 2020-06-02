@@ -48,6 +48,7 @@ public class LightLogMybatisConfig {
         MybatisConfiguration configuration = new MybatisConfiguration();
         configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         configuration.setJdbcTypeForNull(JdbcType.NULL);
+        configuration.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
         bean.setConfiguration(configuration);
         return bean.getObject();
     }
