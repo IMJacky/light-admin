@@ -1,5 +1,6 @@
 package com.jiqunar.light.controller.upms;
 
+import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
@@ -21,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/JobEntity")
 @Api(tags = "岗位相关接口")
-public class JobController {
+public class JobController extends BaseController {
     @Autowired
     private JobService jobService;
 
@@ -81,7 +82,7 @@ public class JobController {
     @GetMapping("{id}")
     @ApiOperation("查看单个岗位")
     public BaseResponse getOne(@PathVariable Long id) {
-        return BaseResponse.success(jobService.getById(id));
+        return BaseResponse.success(getClientIp());
     }
 
     /**
