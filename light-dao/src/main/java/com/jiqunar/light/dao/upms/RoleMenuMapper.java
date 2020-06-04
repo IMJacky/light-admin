@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * 角色菜单 Mapper 接口
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Repository
 public interface RoleMenuMapper extends BaseMapper<RoleMenuEntity> {

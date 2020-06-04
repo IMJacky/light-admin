@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * 部门 服务实现类
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Service
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> implements DeptService {

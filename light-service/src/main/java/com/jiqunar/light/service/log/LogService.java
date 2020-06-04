@@ -9,7 +9,7 @@ import com.jiqunar.light.model.response.PageResponse;
  * 日志 服务类
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 public interface LogService extends IService<LogEntity> {
     /**

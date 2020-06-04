@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * 用户角色 服务实现类
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Service
 public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEntity> implements UserRoleService {

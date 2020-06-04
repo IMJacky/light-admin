@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jiqunar.light.model.entity.upms.RoleMenuEntity;
 import com.jiqunar.light.service.upms.RoleMenuService;
 import org.springframework.web.bind.annotation.RestController;
+import com.jiqunar.light.controller.BaseController;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
  * 角色菜单 前端控制器
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @RestController
 @RequestMapping("/RoleMenuEntity")
 @Api(tags = "角色菜单相关接口")
-public class RoleMenuController {
+public class RoleMenuController extends BaseController {
     @Autowired
     private RoleMenuService roleMenuService;
 

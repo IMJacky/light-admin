@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.entity.BaseEntity;
 
 import java.io.File;
@@ -84,7 +85,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         String dbname = scanner("数据库：" + dataSourceMap.entrySet().stream().map(m -> m.getKey()).collect(Collectors.joining("，")));
-        //pc.setModuleName(dbname);
+        pc.setModuleName(null);
         pc.setParent("codegenerator");
         pc.setMapper("dao." + dbname);
         pc.setEntity("model.entity." + dbname);
@@ -154,6 +155,7 @@ public class CodeGenerator {
         if (baseEntityMap.get(dbname) != null) {
             strategy.setSuperEntityClass(baseEntityMap.get(dbname));
         }
+        strategy.setSuperControllerClass(BaseController.class);
         strategy.setTablePrefix(prefixMap.get(dbname));
         // 公共父类
         //strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");

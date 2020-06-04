@@ -73,3 +73,10 @@ spring:
           log-slow-sql: true
           slow-sql-millis: 2000
       filters: stat,wall
+#自定义的一些配置
+custom:
+  #默认本地开发环境不需要token验证，默认id=1，username=admin
+  auth:
+    open: true
+    userid: 1
+    username: admin

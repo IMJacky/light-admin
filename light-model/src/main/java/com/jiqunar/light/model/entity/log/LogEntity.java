@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * 日志
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

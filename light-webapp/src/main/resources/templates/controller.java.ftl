@@ -34,10 +34,10 @@ import java.util.List;
 <#if kotlin>
 class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
 <#else>
+@Api(tags = "${table.comment!}相关接口")
  <#if superControllerClass??>
 public class ${table.controllerName} extends ${superControllerClass} {
  <#else>
-@Api(tags = "${table.comment!}相关接口")
 public class ${table.controllerName} {
  </#if>
 </#if>

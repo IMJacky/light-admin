@@ -1,5 +1,6 @@
 package com.jiqunar.light.model.request.upms;
 
+import com.sun.deploy.panel.IProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,4 +26,10 @@ public class LoginRequest {
     @ApiModelProperty(value = "密码")
     @NotBlank(message = "密码不能为空")
     private String password;
+
+    /**
+     * 记住我一周
+     */
+    @ApiModelProperty(value = "记住我一周")
+    private Boolean rememberMe;
 }

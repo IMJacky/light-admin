@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jiqunar.light.model.entity.log.LogEntity;
 import com.jiqunar.light.service.log.LogService;
 import org.springframework.web.bind.annotation.RestController;
+import com.jiqunar.light.controller.BaseController;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
  * 日志 前端控制器
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @RestController
 @RequestMapping("/LogEntity")
 @Api(tags = "日志相关接口")
-public class LogController {
+public class LogController extends BaseController {
     @Autowired
     private LogService logService;
 

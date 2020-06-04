@@ -20,24 +20,33 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private RedistUtils redistUtils;
+    @Autowired
+    private CustomConfig customConfig;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("Access-Token");
-        if (StringUtils.isBlank(token)) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            //response.getWriter().print("please login");
-            response.getWriter().print(new Gson().toJson(BaseResponse.invalidToken("please login")));
-            return false;
-        }
-        String redisToken = redistUtils.get(token);
-        if (StringUtils.isBlank(redisToken)) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            //response.getWriter().print("token error");
-            response.getWriter().print(new Gson().toJson(BaseResponse.invalidToken("token error")));
-            return false;
+        if (customConfig.getAuthOpen() && !customConfig.getExcludePathPatterns().contains(request.getRequestURI())) {
+            String token = request.getHeader("Access-Token");
+            if (StringUtils.isBlank(token)) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                //response.getWriter().print("please login");
+                response.getWriter().print(new Gson().toJson(BaseResponse.invalidToken("please login")));
+                return false;
+            }
+            String redisTokenValue = redistUtils.get(token);
+            if (StringUtils.isBlank(redisTokenValue)) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                //response.getWriter().print("token error");
+                response.getWriter().print(new Gson().toJson(BaseResponse.invalidToken("token error")));
+                return false;
+            }
+            request.setAttribute("userid", Long.valueOf(redisTokenValue.split("_")[0]));
+            request.setAttribute("username", redisTokenValue.split("_")[1]);
+        } else {
+            request.setAttribute("userid", customConfig.getAuthUserId());
+            request.setAttribute("username", customConfig.getAuthUserName());
         }
         return true;
     }

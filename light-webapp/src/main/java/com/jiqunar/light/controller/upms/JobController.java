@@ -1,6 +1,5 @@
 package com.jiqunar.light.controller.upms;
 
-import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jiqunar.light.model.entity.upms.JobEntity;
 import com.jiqunar.light.service.upms.JobService;
 import org.springframework.web.bind.annotation.RestController;
+import com.jiqunar.light.controller.BaseController;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * 岗位 前端控制器
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @RestController
 @RequestMapping("/JobEntity")
@@ -82,7 +82,7 @@ public class JobController extends BaseController {
     @GetMapping("{id}")
     @ApiOperation("查看单个岗位")
     public BaseResponse getOne(@PathVariable Long id) {
-        return BaseResponse.success(getClientIp());
+        return BaseResponse.success(jobService.getById(id));
     }
 
     /**

@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * 岗位 服务实现类
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Service
 public class JobServiceImpl extends ServiceImpl<JobMapper, JobEntity> implements JobService {

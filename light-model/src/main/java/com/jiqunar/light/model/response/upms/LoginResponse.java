@@ -16,10 +16,4 @@ public class LoginResponse {
      */
     @ApiModelProperty(value = "登录Token")
     private String token;
-
-    /**
-     * 用户Id
-     */
-    @ApiModelProperty(value = "用户Id")
-    private Long userId;
 }

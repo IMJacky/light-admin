@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jiqunar.light.model.entity.upms.UserRoleEntity;
 import com.jiqunar.light.service.upms.UserRoleService;
 import org.springframework.web.bind.annotation.RestController;
+import com.jiqunar.light.controller.BaseController;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
  * 用户角色 前端控制器
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @RestController
 @RequestMapping("/UserRoleEntity")
 @Api(tags = "用户角色相关接口")
-public class UserRoleController {
+public class UserRoleController extends BaseController {
     @Autowired
     private UserRoleService userRoleService;
 

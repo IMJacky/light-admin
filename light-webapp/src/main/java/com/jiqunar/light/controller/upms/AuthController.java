@@ -1,5 +1,6 @@
 package com.jiqunar.light.controller.upms;
 
+import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.upms.*;
@@ -22,7 +23,7 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/auth")
 @Api(tags = "权限相关接口")
 @Validated
-public class AuthController {
+public class AuthController extends BaseController {
     @Autowired
     private AuthService authService;
 
@@ -44,8 +45,8 @@ public class AuthController {
      */
     @GetMapping("/logout")
     @ApiOperation("退出")
-    public BaseResponse logout(@RequestParam @NotNull(message = "用户id不能为空") Long userId) {
-        return BaseResponse.success(authService.logout(userId));
+    public BaseResponse logout() {
+        return BaseResponse.success(authService.logout(baseRequest().getOperateId()));
     }
 
     /**
@@ -55,7 +56,7 @@ public class AuthController {
      */
     @GetMapping("/userInfo")
     @ApiOperation("获取用户信息")
-    public BaseResponse getUserInfo(@RequestParam @NotNull(message = "用户id不能为空") Long userId) {
-        return BaseResponse.success(authService.getUserInfo(userId));
+    public BaseResponse getUserInfo() {
+        return BaseResponse.success(authService.getUserInfo(baseRequest().getOperateId()));
     }
 }

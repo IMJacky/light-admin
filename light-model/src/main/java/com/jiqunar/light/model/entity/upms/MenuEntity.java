@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * 菜单
  *
  * @author auto generator
- * @since 2020-06-03
+ * @since 2020-06-04
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

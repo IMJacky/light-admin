@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * 日志 Mapper 接口
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-04
  */
 @Repository
 public interface LogMapper extends BaseMapper<LogEntity> {

@@ -56,20 +56,23 @@ public class AuthServiceImpl implements AuthService {
                 .eq(UserEntity::getUserName, request.getUsername())
                 .eq(UserEntity::getPassword, request.getPassword()).one();
         if (userEntity != null) {
-            String oldToken = redistUtils.get(userEntity.getId().toString());
+            String userKey = userEntity.getId() + "_" + userEntity.getUserName();
+            String oldToken = redistUtils.get(userKey);
             if (!StringUtils.isBlank(oldToken)) {
                 redistUtils.delete(oldToken);
             }
             String token = UUID.randomUUID().toString().replace("-", "");
-            Long expireSecond = 7 * 24 * 60 * 60L;
-            redistUtils.put(token, userEntity.getId().toString(), expireSecond);
-            redistUtils.put(userEntity.getId().toString(), token, expireSecond);
+            Long expireSecond = 24 * 60 * 60L;
+            if (request.getRememberMe() != null && request.getRememberMe()) {
+                expireSecond *= 7;
+            }
+            redistUtils.put(token, userKey, expireSecond);
+            redistUtils.put(userKey, token, expireSecond);
 
             userService.lambdaUpdate()
                     .set(UserEntity::getVisitDate, LocalDateTime.now())
                     .eq(UserEntity::getId, userEntity.getId()).update();
 
-            response.setUserId(userEntity.getId());
             response.setToken(token);
         }
         return response;
@@ -151,10 +154,16 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Boolean logout(Long userId) {
-        String oldToken = redistUtils.get(userId.toString());
-        if (!StringUtils.isBlank(oldToken)) {
-            redistUtils.delete(oldToken);
+        Boolean result = false;
+        UserEntity userEntity = userService.getById(userId);
+        if (userEntity != null) {
+            String userKey = userEntity.getId() + "_" + userEntity.getUserName();
+            String oldToken = redistUtils.get(userKey);
+            if (!StringUtils.isBlank(oldToken)) {
+                redistUtils.delete(oldToken);
+            }
+            result = redistUtils.delete(userKey);
         }
-        return redistUtils.delete(userId.toString());
+        return result;
     }
 }
