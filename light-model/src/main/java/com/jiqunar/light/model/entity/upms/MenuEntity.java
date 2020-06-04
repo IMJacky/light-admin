@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * 菜单
  *
  * @author auto generator
- * @since 2020-05-28
+ * @since 2020-06-03
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,6 +23,13 @@ import lombok.experimental.Accessors;
 public class MenuEntity extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 菜单唯一标识
+     */
+    @ApiModelProperty(value = "菜单唯一标识")
+    @TableField("menu_key")
+    private String menuKey;
 
     /**
      * 菜单名称

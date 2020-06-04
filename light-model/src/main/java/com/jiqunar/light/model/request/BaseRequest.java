@@ -11,9 +11,9 @@ import lombok.Data;
 public class BaseRequest {
 
     /**
-     * 操作人工号
+     * 操作人Id
      */
-    private Long operateJobNumber;
+    private Long operateId;
 
     /**
      * 操作人名字

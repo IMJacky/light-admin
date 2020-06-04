@@ -11,15 +11,13 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.jiqunar.light.model.common.DateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -37,6 +35,9 @@ import java.util.TimeZone;
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
+    @Autowired
+    private LoginInterceptor loginInterceptor;
+
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         AntPathMatcher matcher = new AntPathMatcher();
@@ -96,5 +97,10 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .allowedMethods(new String[]{"GET", "POST", "PUT", "DELETE"})
                 .allowedHeaders("*")
                 .exposedHeaders("Header1");
+    }
+
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor).excludePathPatterns("/auth/login");
     }
 }

@@ -7,7 +7,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -72,8 +74,16 @@ public class CustomExceptionConfig {
      * @return
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public Object constraintViolationException(ConstraintViolationException ex) {
+    public BaseResponse constraintViolationException(ConstraintViolationException ex) {
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
         return BaseResponse.invalidParams(String.join(",", violations.stream().map(m -> m.getMessage()).collect(Collectors.toList())));
+    }
+
+    /**
+     * 缺少请求参数
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public BaseResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        return BaseResponse.invalidParams("缺少请求参数");
     }
 }
