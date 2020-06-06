@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
             response.setCreatorName(userEntity.getCreaterName());
             response.setDeleted(userEntity.getIsDeleted());
             response.setGender(userEntity.getGender());
-            response.setId("user-" + userEntity.getId());
+            response.setId(userEntity.getId().toString());
             response.setLastLoginTime(userEntity.getVisitDate());
             response.setName(userEntity.getUserName());
             response.setNickname(userEntity.getNickName());
@@ -109,7 +109,7 @@ public class AuthServiceImpl implements AuthService {
                     userRole.setCreatorName(firstRoleInfo.getCreaterName());
                     userRole.setDeleted(firstRoleInfo.getIsDeleted());
                     userRole.setDescribe(firstRoleInfo.getDescription());
-                    userRole.setId("role-" + firstRoleInfo.getId().toString());
+                    userRole.setId(firstRoleInfo.getId().toString());
                     userRole.setName(firstRoleInfo.getRoleName());
 
                     List<RoleMenuEntity> roleMenuEntityList = roleMenuService.lambdaQuery()
@@ -123,9 +123,9 @@ public class AuthServiceImpl implements AuthService {
                             for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getType().equals(0)).collect(Collectors.toList())) {
                                 UserRolePermission userRolePermission = new UserRolePermission();
                                 userRolePermission.setRoleId(userRole.getId());
-                                userRolePermission.setPermissionId("menu-" + menu.getId());
+                                userRolePermission.setPermissionId(menu.getId().toString());
                                 userRolePermission.setPermissionName(menu.getMenuName());
-                                if (!userRolePermissionList.stream().anyMatch(m -> m.getPermissionId().equals("menu-" + menu.getId()))) {
+                                if (!userRolePermissionList.stream().anyMatch(m -> m.getPermissionId().equals(menu.getId()))) {
                                     userRolePermissionList.add(userRolePermission);
                                 }
                             }
@@ -184,17 +184,11 @@ public class AuthServiceImpl implements AuthService {
     private List<UserMenuResponse> getUserMenuList(List<MenuEntity> menuEntityList, List<UserMenuResponse> userMenuResponseList) {
         for (MenuEntity menu : menuEntityList.stream().sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
             UserMenuResponse userMenuResponse = new UserMenuResponse();
-            userMenuResponse.setKey("menu-" + menu.getId());
+            userMenuResponse.setKey(menu.getId().toString());
             userMenuResponse.setPath(menu.getPath());
             userMenuResponse.setId(menu.getId());
             userMenuResponse.setParentId(menu.getParentMenuId());
             userMenuResponse.setComponent(menu.getComponent());
-            if (menu.getId() == 1L) {
-                userMenuResponse.setRedirect("/account/center");
-            }
-            if (menu.getId() == 3L) {
-                userMenuResponse.setRedirect("/dashboard/workplace");
-            }
             UserMenuMeta meta = new UserMenuMeta();
             meta.setIcon(menu.getIcon());
             meta.setTitle(menu.getMenuName());

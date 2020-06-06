@@ -47,9 +47,4 @@ public class UserMenuResponse {
      */
     @ApiModelProperty(value = "用户菜单扩展信息")
     private UserMenuMeta meta;
-
-    /**
-     * 重定向路由地址
-     */
-    private String redirect;
 }
