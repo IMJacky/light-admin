@@ -18,7 +18,7 @@ public class UserRole {
      * 角色id
      */
     @ApiModelProperty(value = "角色id")
-    private Long id;
+    private String id;
 
     /**
      * 角色名称

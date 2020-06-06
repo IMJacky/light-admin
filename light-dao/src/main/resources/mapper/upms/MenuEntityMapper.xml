@@ -12,12 +12,11 @@
                 <result column="updater_name" property="updaterName" />
                 <result column="update_date" property="updateDate" />
                 <result column="is_deleted" property="isDeleted" />
-                    <result column="menu_key" property="menuKey" />
+                    <result column="parent_menu_id" property="parentMenuId" />
                     <result column="menu_name" property="menuName" />
                     <result column="path" property="path" />
-                    <result column="parent_menu_id" property="parentMenuId" />
+                    <result column="component" property="component" />
                     <result column="type" property="type" />
-                    <result column="is_link" property="isLink" />
                     <result column="sort" property="sort" />
                     <result column="icon" property="icon" />
         </resultMap>
@@ -32,7 +31,7 @@
                 updater_name,
                 update_date,
                 is_deleted,
-            menu_key, menu_name, path, parent_menu_id, type, is_link, sort, icon
+            parent_menu_id, menu_name, path, component, type, sort, icon
         </sql>
 
 </mapper>

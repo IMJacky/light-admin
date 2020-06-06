@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * 菜单
  *
  * @author auto generator
- * @since 2020-06-04
+ * @since 2020-06-05
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,11 +25,11 @@ public class MenuEntity extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单唯一标识
+     * 父级菜单Id
      */
-    @ApiModelProperty(value = "菜单唯一标识")
-    @TableField("menu_key")
-    private String menuKey;
+    @ApiModelProperty(value = "父级菜单Id")
+    @TableField("parent_menu_id")
+    private Long parentMenuId;
 
     /**
      * 菜单名称
@@ -46,25 +46,18 @@ public class MenuEntity extends BaseEntity {
     private String path;
 
     /**
-     * 父级菜单Id
+     * 组件路径
      */
-    @ApiModelProperty(value = "父级菜单Id")
-    @TableField("parent_menu_id")
-    private Long parentMenuId;
+    @ApiModelProperty(value = "组件路径")
+    @TableField("component")
+    private String component;
 
     /**
-     * 类型（0菜单，1按钮）
+     * 类型（0菜单，1按钮，2外链）
      */
-    @ApiModelProperty(value = "类型（0菜单，1按钮）")
+    @ApiModelProperty(value = "类型（0菜单，1按钮，2外链）")
     @TableField("type")
     private Integer type;
-
-    /**
-     * 是否外链（0否，1是）
-     */
-    @ApiModelProperty(value = "是否外链（0否，1是）")
-    @TableField("is_link")
-    private Integer isLink;
 
     /**
      * 排序值

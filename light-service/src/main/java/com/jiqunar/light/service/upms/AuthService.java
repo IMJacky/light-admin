@@ -3,6 +3,9 @@ package com.jiqunar.light.service.upms;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.upms.LoginResponse;
 import com.jiqunar.light.model.response.upms.UserInfoResponse;
+import com.jiqunar.light.model.response.upms.UserMenuResponse;
+
+import java.util.List;
 
 /**
  * 权限服务定义
@@ -23,6 +26,13 @@ public interface AuthService {
      * @return
      */
     UserInfoResponse getUserInfo(Long userId);
+
+    /**
+     * 获取用户菜单
+     * @param userId
+     * @return
+     */
+    List<UserMenuResponse> getUserMenu(Long userId);
 
     /**
      * 退出登录

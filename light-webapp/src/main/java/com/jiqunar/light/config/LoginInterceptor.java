@@ -25,8 +25,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (customConfig.getAuthOpen()) {
-            String token = request.getHeader("Access-Token");
+        String token = request.getHeader("Access-Token");
+        if (customConfig.getAuthOpen() && StringUtils.isBlank(token)) {
             if (StringUtils.isBlank(token)) {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");

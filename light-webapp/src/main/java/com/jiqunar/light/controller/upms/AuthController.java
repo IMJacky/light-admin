@@ -59,4 +59,15 @@ public class AuthController extends BaseController {
     public BaseResponse getUserInfo() {
         return BaseResponse.success(authService.getUserInfo(baseRequest().getOperateId()));
     }
+
+    /**
+     * 获取用户菜单
+     *
+     * @return
+     */
+    @GetMapping("/userMenu")
+    @ApiOperation("获取用户菜单")
+    public BaseResponse getUserMenu() {
+        return BaseResponse.success(authService.getUserMenu(baseRequest().getOperateId()));
+    }
 }

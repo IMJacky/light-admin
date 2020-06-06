@@ -17,7 +17,7 @@ public class UserInfoResponse {
      * 用户id
      */
     @ApiModelProperty(value = "用户id")
-    private Long id;
+    private String id;
 
     /**
      * 姓名

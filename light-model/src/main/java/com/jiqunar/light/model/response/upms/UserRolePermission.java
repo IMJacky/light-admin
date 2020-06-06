@@ -17,7 +17,7 @@ public class UserRolePermission {
      * 角色id
      */
     @ApiModelProperty(value = "角色id")
-    private Long roleId;
+    private String roleId;
 
     /**
      * 权限唯一标识

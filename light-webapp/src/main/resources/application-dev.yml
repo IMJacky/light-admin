@@ -77,6 +77,6 @@ spring:
 custom:
   #默认本地开发环境不需要token验证，默认id=1，username=admin
   auth:
-    open: true
+    open: false
     userid: 1
     username: admin
