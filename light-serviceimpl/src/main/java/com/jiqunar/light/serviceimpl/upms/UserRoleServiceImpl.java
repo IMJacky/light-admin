@@ -26,8 +26,8 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleEnt
      */
     @Override
     public PageResponse page(PageRequest request) {
-        IPage page = new Page<>(request.getPageIndex(), request.getPageSize());
+        IPage page = new Page<>(request.getPageNo(), request.getPageSize());
         page = this.page(page);
-        return new PageResponse(page.getTotal(), page.getRecords());
+        return new PageResponse(request.getPageNo(), page.getTotal(), page.getRecords());
     }
 }

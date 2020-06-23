@@ -17,6 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class PageResponse<T> {
     /**
+     * 当前页码
+     */
+    private Integer pageNo;
+
+    /**
      * 总数
      */
     private Long totalCount;

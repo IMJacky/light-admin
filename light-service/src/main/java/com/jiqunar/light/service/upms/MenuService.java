@@ -3,6 +3,7 @@ package com.jiqunar.light.service.upms;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -18,5 +19,5 @@ public interface MenuService extends IService<MenuEntity> {
      * @param request
      * @return
      */
-    PageResponse page(PageRequest request);
+    PageResponse page(MenuListRequest request);
 }

@@ -13,7 +13,7 @@ public class PageRequest extends BaseRequest {
     /**
      * 第几页
      */
-    private Integer pageIndex;
+    private Integer pageNo;
 
     /**
      * 页码大小

@@ -96,7 +96,7 @@ public class RedistUtils {
      * @param key key
      * @return 字符串
      */
-    public String get(Object key) {
+    public String get(Object key, String... aa) {
         if (verifyParam(key)) {
             Object o = redisTemplate.opsForValue().get(key);
             return o == null ? null : String.valueOf(o);
@@ -113,6 +113,19 @@ public class RedistUtils {
     public Boolean delete(Object key) {
         if (verifyParam(key)) {
             return redisTemplate.delete(key);
+        }
+        return Boolean.FALSE;
+    }
+
+    /**
+     * 缓存是否存在
+     *
+     * @param key key
+     * @return 是否存在
+     */
+    public Boolean exist(Object key) {
+        if (verifyParam(key)) {
+            return redisTemplate.hasKey(key);
         }
         return Boolean.FALSE;
     }

@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +105,7 @@ public class MenuController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看菜单")
-    public BaseResponse page(@RequestBody PageRequest request) {
+    public BaseResponse page(@RequestBody MenuListRequest request) {
         return BaseResponse.success(menuService.page(request));
     }
 }
