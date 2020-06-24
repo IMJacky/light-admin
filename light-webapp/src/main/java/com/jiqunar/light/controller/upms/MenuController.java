@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
@@ -107,5 +108,17 @@ public class MenuController extends BaseController {
     @ApiOperation("分页查看菜单")
     public BaseResponse page(@RequestBody MenuListRequest request) {
         return BaseResponse.success(menuService.page(request));
+    }
+
+    /**
+     * 编辑菜单
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑菜单")
+    public BaseResponse edit(@RequestBody MenuEditRequest request) {
+        return BaseResponse.success(menuService.edit(request));
     }
 }

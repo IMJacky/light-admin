@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.jiqunar.light.dao.upms.MenuMapper;
+import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
+import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.service.upms.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +17,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,5 +54,48 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
         }
         page = this.page(page, queryWrapper);
         return new PageResponse(request.getPageNo(), page.getTotal(), page.getRecords());
+    }
+
+    /**
+     * 编辑菜单
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public Long edit(MenuEditRequest request) {
+        MenuEntity menuEntity = new MenuEntity();
+        Long result = Long.valueOf(0);
+        LocalDateTime now = LocalDateTime.now();
+        if (request.getId() != null && request.getId() > 0) {
+            menuEntity = this.getById(request.getId());
+            menuEntity.setUpdateDate(now);
+            menuEntity.setUpdaterId(request.getOperateId());
+            menuEntity.setUpdaterName(request.getOperateName());
+        } else {
+            menuEntity.setCreateDate(now);
+            menuEntity.setCreaterId(request.getOperateId());
+            menuEntity.setCreaterName(request.getOperateName());
+        }
+        menuEntity.setComponent(request.getComponent());
+        menuEntity.setIcon(request.getIcon());
+        menuEntity.setMenuName(request.getMenuName());
+        menuEntity.setParentMenuId(request.getParentMenuId());
+        menuEntity.setPath(request.getPath());
+        menuEntity.setSort(request.getSort());
+        menuEntity.setType(request.getType());
+        if (request.getId() != null && request.getId() > 0) {
+            if (this.updateById(menuEntity)) {
+                result = menuEntity.getId();
+            }
+        } else {
+            menuEntity.setCreateDate(now);
+            menuEntity.setCreaterId(request.getOperateId());
+            menuEntity.setCreaterName(request.getOperateName());
+            if (this.save(menuEntity)) {
+                result = menuEntity.getId();
+            }
+        }
+        return result;
     }
 }

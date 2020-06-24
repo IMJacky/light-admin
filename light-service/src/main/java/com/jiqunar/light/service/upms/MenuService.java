@@ -3,7 +3,9 @@ package com.jiqunar.light.service.upms;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
+import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -20,4 +22,12 @@ public interface MenuService extends IService<MenuEntity> {
      * @return
      */
     PageResponse page(MenuListRequest request);
+
+    /**
+     * 编辑菜单
+     *
+     * @param request
+     * @return
+     */
+    Long edit(MenuEditRequest request);
 }
