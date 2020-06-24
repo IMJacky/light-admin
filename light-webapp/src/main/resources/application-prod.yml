@@ -1,10 +1,12 @@
 server:
-  port: 8888
+  port: 10003
+#  servlet:
+#    context-path: /api
 spring:
   application:
     name: light
   redis:
-    host: 118.25.11.180
+    host: 10.154.5.185
     port: 6379
     password: Wjg50058
     # 连接超时时间（记得添加单位，Duration）
@@ -25,11 +27,11 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     lightlog:
-      url: jdbc:mysql://118.25.11.180:3306/light_log?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://10.154.5.185:3306/light_log?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       username: root
       password: Wjg50058
     lightupms:
-      url: jdbc:mysql://118.25.11.180:3306/light_upms?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://10.154.5.185:3306/light_upms?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       username: root
       password: Wjg50058
     druid:
@@ -71,3 +73,10 @@ spring:
           log-slow-sql: true
           slow-sql-millis: 2000
       filters: stat,wall
+#自定义的一些配置
+custom:
+  #默认本地开发环境不需要token验证，默认id=1，username=admin
+  auth:
+    open: false
+    userid: 1
+    username: admin
