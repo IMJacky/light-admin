@@ -1,6 +1,5 @@
 package com.jiqunar.light.model.request.upms;
 
-import com.sun.deploy.panel.IProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
