@@ -44,6 +44,7 @@
                 <executions>
                     <execution>
                         <id>default</id>
+                        <phase>install</phase>
                         <goals>
                             <goal>build</goal>
                         </goals>
@@ -53,7 +54,7 @@
                     <repository>java/light</repository>
                     <tag>latest</tag>
                     <dockerfile>Dockerfile</dockerfile>
-                    <contextDirectory>./</contextDirectory>
+                    <contextDirectory>${project.basedir}</contextDirectory>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
