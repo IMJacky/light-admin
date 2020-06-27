@@ -51,7 +51,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <dockerfile.skip>false</dockerfile.skip>
+                    <skip>false</skip>
                     <repository>java/light</repository>
                     <tag>latest</tag>
                     <dockerfile>Dockerfile</dockerfile>
