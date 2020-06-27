@@ -66,6 +66,8 @@ spring:
         login-username: admin
         # 登录密码
         login-password: admin
+        allow:
+        deny: 
       filter:
         stat:
           enabled: true
