@@ -42,6 +42,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>${dockerfile-maven-plugin.version}</version>
                 <configuration>
+                    <skip>false</skip>
                     <repository>java/light</repository>
                     <tag>latest</tag>
                     <dockerfile>Dockerfile</dockerfile>
