@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.RoleEditRequest;
+import com.jiqunar.light.model.request.upms.RoleListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +105,19 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看角色")
-    public BaseResponse page(@RequestBody PageRequest request) {
+    public BaseResponse page(@RequestBody RoleListRequest request) {
         return BaseResponse.success(roleService.page(request));
+    }
+
+    /**
+     * 编辑角色
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑角色")
+    public BaseResponse edit(@RequestBody RoleEditRequest request) {
+        return BaseResponse.success(roleService.edit(request));
     }
 }

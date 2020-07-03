@@ -6,14 +6,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * 权限相关接口
@@ -50,6 +50,9 @@ public class TestController {
     public BaseResponse testRedis() {
         Boolean result = false;
         String cacheKey = "fuck";
+        Map<Boolean, String> exceedLimitRecordMap = new HashMap<>();
+        boolean exceedLimit = !CollectionUtils.isEmpty(exceedLimitRecordMap)
+                && new ArrayList<Boolean>(exceedLimitRecordMap.keySet()).get(0);
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

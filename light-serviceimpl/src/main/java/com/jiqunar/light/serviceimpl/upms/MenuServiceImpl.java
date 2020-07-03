@@ -6,12 +6,10 @@ import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.jiqunar.light.dao.upms.MenuMapper;
 import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
-import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.service.upms.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -89,9 +87,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
                 result = menuEntity.getId();
             }
         } else {
-            menuEntity.setCreateDate(now);
-            menuEntity.setCreaterId(request.getOperateId());
-            menuEntity.setCreaterName(request.getOperateName());
             if (this.save(menuEntity)) {
                 result = menuEntity.getId();
             }

@@ -2,7 +2,8 @@ package com.jiqunar.light.service.upms;
 
 import com.jiqunar.light.model.entity.upms.RoleEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.RoleEditRequest;
+import com.jiqunar.light.model.request.upms.RoleListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -18,5 +19,13 @@ public interface RoleService extends IService<RoleEntity> {
      * @param request
      * @return
      */
-    PageResponse page(PageRequest request);
+    PageResponse page(RoleListRequest request);
+
+    /**
+     * 编辑角色
+     *
+     * @param request
+     * @return
+     */
+    Long edit(RoleEditRequest request);
 }

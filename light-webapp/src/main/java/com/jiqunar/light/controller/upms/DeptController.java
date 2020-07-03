@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.DeptEditRequest;
+import com.jiqunar.light.model.request.upms.DeptListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,8 +11,6 @@ import com.jiqunar.light.model.entity.upms.DeptEntity;
 import com.jiqunar.light.service.upms.DeptService;
 import org.springframework.web.bind.annotation.RestController;
 import com.jiqunar.light.controller.BaseController;
-
-import java.util.List;
 
 /**
  * 部门 前端控制器
@@ -104,7 +103,19 @@ public class DeptController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看部门")
-    public BaseResponse page(@RequestBody PageRequest request) {
+    public BaseResponse page(@RequestBody DeptListRequest request) {
         return BaseResponse.success(deptService.page(request));
+    }
+
+    /**
+     * 编辑用户
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑用户")
+    public BaseResponse edit(@RequestBody DeptEditRequest request) {
+        return BaseResponse.success(deptService.edit(request));
     }
 }

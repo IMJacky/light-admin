@@ -2,7 +2,8 @@ package com.jiqunar.light.service.upms;
 
 import com.jiqunar.light.model.entity.upms.UserEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.UserEditRequest;
+import com.jiqunar.light.model.request.upms.UserListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -18,5 +19,13 @@ public interface UserService extends IService<UserEntity> {
      * @param request
      * @return
      */
-    PageResponse page(PageRequest request);
+    PageResponse page(UserListRequest request);
+
+    /**
+     * 编辑用户
+     *
+     * @param request
+     * @return
+     */
+    Long edit(UserEditRequest request);
 }

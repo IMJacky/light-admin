@@ -1,6 +1,8 @@
 package com.jiqunar.light.controller.upms;
 
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.UserEditRequest;
+import com.jiqunar.light.model.request.upms.UserListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +106,19 @@ public class UserController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看用户")
-    public BaseResponse page(@RequestBody PageRequest request) {
+    public BaseResponse page(@RequestBody UserListRequest request) {
         return BaseResponse.success(userService.page(request));
+    }
+
+    /**
+     * 编辑用户
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑用户")
+    public BaseResponse edit(@RequestBody UserEditRequest request) {
+        return BaseResponse.success(userService.edit(request));
     }
 }

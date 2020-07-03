@@ -2,7 +2,8 @@ package com.jiqunar.light.service.upms;
 
 import com.jiqunar.light.model.entity.upms.JobEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.JobEditRequest;
+import com.jiqunar.light.model.request.upms.JobListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -18,5 +19,13 @@ public interface JobService extends IService<JobEntity> {
      * @param request
      * @return
      */
-    PageResponse page(PageRequest request);
+    PageResponse page(JobListRequest request);
+
+    /**
+     * 编辑岗位
+     *
+     * @param request
+     * @return
+     */
+    Long edit(JobEditRequest request);
 }

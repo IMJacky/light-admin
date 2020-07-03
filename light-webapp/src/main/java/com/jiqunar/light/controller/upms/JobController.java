@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.JobEditRequest;
+import com.jiqunar.light.model.request.upms.JobListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,8 +11,6 @@ import com.jiqunar.light.model.entity.upms.JobEntity;
 import com.jiqunar.light.service.upms.JobService;
 import org.springframework.web.bind.annotation.RestController;
 import com.jiqunar.light.controller.BaseController;
-
-import java.util.List;
 
 /**
  * 岗位 前端控制器
@@ -104,7 +103,19 @@ public class JobController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看岗位")
-    public BaseResponse page(@RequestBody PageRequest request) {
+    public BaseResponse page(@RequestBody JobListRequest request) {
         return BaseResponse.success(jobService.page(request));
+    }
+
+    /**
+     * 编辑岗位
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑岗位")
+    public BaseResponse edit(@RequestBody JobEditRequest request) {
+        return BaseResponse.success(jobService.edit(request));
     }
 }
