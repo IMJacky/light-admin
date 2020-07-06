@@ -31,6 +31,12 @@ public class UserMenuResponse {
     private String path;
 
     /**
+     * 是否外链
+     */
+    @ApiModelProperty(value = "是否外链")
+    private Boolean isLink;
+
+    /**
      * 路由唯一标识
      */
     @ApiModelProperty(value = "路由唯一标识")

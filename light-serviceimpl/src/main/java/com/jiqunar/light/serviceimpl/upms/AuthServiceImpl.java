@@ -120,7 +120,7 @@ public class AuthServiceImpl implements AuthService {
                         List<MenuEntity> menuEntityList = menuService.listByIds(roleMenuEntityList.stream().map(RoleMenuEntity::getMenuId).collect(Collectors.toList()));
                         if (CollectionUtils.isNotEmpty(menuEntityList)) {
                             List<UserRolePermission> userRolePermissionList = new ArrayList<>();
-                            for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getType().equals(0)).collect(Collectors.toList())) {
+                            for (MenuEntity menu : menuEntityList.stream().filter(m -> !m.getType().equals(1)).collect(Collectors.toList())) {
                                 UserRolePermission userRolePermission = new UserRolePermission();
                                 userRolePermission.setRoleId(userRole.getId());
                                 userRolePermission.setPermissionId(menu.getId().toString());
@@ -189,6 +189,7 @@ public class AuthServiceImpl implements AuthService {
             userMenuResponse.setId(menu.getId());
             userMenuResponse.setParentId(menu.getParentMenuId());
             userMenuResponse.setComponent(menu.getComponent());
+            userMenuResponse.setIsLink(menu.getType().equals(2));
             UserMenuMeta meta = new UserMenuMeta();
             meta.setIcon(menu.getIcon());
             meta.setTitle(menu.getMenuName());
