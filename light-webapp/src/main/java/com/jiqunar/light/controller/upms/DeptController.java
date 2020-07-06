@@ -73,6 +73,17 @@ public class DeptController extends BaseController {
     }
 
     /**
+     * 查看所有父级部门
+     *
+     * @return
+     */
+    @GetMapping("/listParent")
+    @ApiOperation("查看所有父级部门")
+    public BaseResponse listParent() {
+        return BaseResponse.success(deptService.listParent());
+    }
+
+    /**
      * 查看单个部门
      *
      * @param id

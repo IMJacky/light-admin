@@ -6,6 +6,8 @@ import com.jiqunar.light.model.request.upms.DeptEditRequest;
 import com.jiqunar.light.model.request.upms.DeptListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
+import java.util.Map;
+
 /**
  * 部门 服务类
  *
@@ -28,4 +30,11 @@ public interface DeptService extends IService<DeptEntity> {
      * @return
      */
     Long edit(DeptEditRequest request);
+
+    /**
+     * 查看所有父级部门
+     *
+     * @return
+     */
+    Map<Long, String> listParent();
 }

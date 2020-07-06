@@ -8,6 +8,8 @@ import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.PageResponse;
 
+import java.util.Map;
+
 /**
  * 菜单 服务类
  *
@@ -30,4 +32,11 @@ public interface MenuService extends IService<MenuEntity> {
      * @return
      */
     Long edit(MenuEditRequest request);
+
+    /**
+     * 查看所有父级菜单
+     *
+     * @return
+     */
+    Map<Long, String> listParent();
 }

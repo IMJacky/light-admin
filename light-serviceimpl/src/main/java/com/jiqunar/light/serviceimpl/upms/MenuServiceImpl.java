@@ -8,6 +8,7 @@ import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.service.upms.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -90,6 +92,27 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
             if (this.save(menuEntity)) {
                 result = menuEntity.getId();
             }
+        }
+        return result;
+    }
+
+    /**
+     * 查看所有父级菜单
+     *
+     * @return
+     */
+    @Override
+    public Map<Long, String> listParent() {
+        Map<Long, String> result = new HashMap<>();
+        result.put(0L, "顶级菜单");
+        LambdaQueryWrapper<MenuEntity> queryWrapper = new QueryWrapper<MenuEntity>().lambda();
+        queryWrapper.orderByDesc(MenuEntity::getId);
+        queryWrapper.eq(MenuEntity::getType, 0);
+        List<MenuEntity> menuEntityList = this.list(queryWrapper);
+        if (CollectionUtils.isNotEmpty(menuEntityList)) {
+            menuEntityList.stream().forEach(m -> {
+                result.put(m.getId(), m.getMenuName());
+            });
         }
         return result;
     }
