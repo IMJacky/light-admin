@@ -125,6 +125,14 @@ public class AuthServiceImpl implements AuthService {
                                 userRolePermission.setRoleId(userRole.getId());
                                 userRolePermission.setPermissionId(menu.getId().toString());
                                 userRolePermission.setPermissionName(menu.getMenuName());
+                                List<UserRolePermissionAction> actionEntitySet = new ArrayList<>();
+                                for (MenuEntity button : menuEntityList.stream().filter(m -> m.getType().equals(1) && m.getParentMenuId().equals(menu.getId())).collect(Collectors.toList())){
+                                    UserRolePermissionAction userRolePermissionAction = new UserRolePermissionAction();
+                                    userRolePermissionAction.setAction(button.getPath());
+                                    userRolePermissionAction.setDescribe(button.getMenuName());
+                                    actionEntitySet.add(userRolePermissionAction);
+                                }
+                                userRolePermission.setActionEntitySet(actionEntitySet);
                                 if (!userRolePermissionList.stream().anyMatch(m -> m.getPermissionId().equals(menu.getId()))) {
                                     userRolePermissionList.add(userRolePermission);
                                 }

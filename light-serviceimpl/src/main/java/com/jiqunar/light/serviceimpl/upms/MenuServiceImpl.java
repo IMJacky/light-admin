@@ -43,7 +43,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
         if (request.getId() != null && request.getId() > 0) {
             queryWrapper.eq(MenuEntity::getId, request.getId());
         }
-        if (request.getParentMenuId() != null && request.getParentMenuId() > 0) {
+        if (request.getParentMenuId() != null) {
             queryWrapper.eq(MenuEntity::getParentMenuId, request.getParentMenuId());
         }
         if (request.getType() != null) {
