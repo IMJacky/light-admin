@@ -126,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
                                 userRolePermission.setPermissionId(menu.getId().toString());
                                 userRolePermission.setPermissionName(menu.getMenuName());
                                 List<UserRolePermissionAction> actionEntitySet = new ArrayList<>();
-                                for (MenuEntity button : menuEntityList.stream().filter(m -> m.getType().equals(1) && m.getParentMenuId().equals(menu.getId())).collect(Collectors.toList())){
+                                for (MenuEntity button : menuEntityList.stream().filter(m -> m.getType().equals(1) && m.getParentMenuId().equals(menu.getId())).collect(Collectors.toList())) {
                                     UserRolePermissionAction userRolePermissionAction = new UserRolePermissionAction();
                                     userRolePermissionAction.setAction(button.getPath());
                                     userRolePermissionAction.setDescribe(button.getMenuName());
@@ -190,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     private List<UserMenuResponse> getUserMenuList(List<MenuEntity> menuEntityList, List<UserMenuResponse> userMenuResponseList) {
-        for (MenuEntity menu : menuEntityList.stream().sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
+        for (MenuEntity menu : menuEntityList.stream().filter(m -> !m.getType().equals(1)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
             UserMenuResponse userMenuResponse = new UserMenuResponse();
             userMenuResponse.setKey(menu.getId().toString());
             userMenuResponse.setPath(menu.getPath());
