@@ -2,19 +2,26 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.dao.upms.UserRoleMapper;
 import com.jiqunar.light.model.entity.upms.UserEntity;
 import com.jiqunar.light.dao.upms.UserMapper;
+import com.jiqunar.light.model.entity.upms.UserRoleEntity;
 import com.jiqunar.light.model.request.upms.UserEditRequest;
 import com.jiqunar.light.model.request.upms.UserListRequest;
 import com.jiqunar.light.service.upms.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用户 服务实现类
@@ -24,6 +31,10 @@ import java.time.LocalDateTime;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements UserService {
+
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
     /**
      * 分页获取用户
      *
@@ -32,19 +43,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      */
     @Override
     public PageResponse page(UserListRequest request) {
-        IPage page = new Page<>(request.getPageNo(), request.getPageSize());
-        LambdaQueryWrapper<UserEntity> queryWrapper = new QueryWrapper<UserEntity>().lambda();
-        queryWrapper.orderByDesc(UserEntity::getId);
-        if (request.getId() != null && request.getId() > 0) {
-            queryWrapper.eq(UserEntity::getId, request.getId());
-        }
-        if (StringUtils.isNotBlank(request.getPhone())) {
-            queryWrapper.eq(UserEntity::getPhone, request.getPhone());
-        }
-        if (StringUtils.isNotBlank(request.getUserName())) {
-            queryWrapper.eq(UserEntity::getUserName, request.getUserName());
-        }
-        page = this.page(page, queryWrapper);
+        IPage page = baseMapper.userList(new Page<>(request.getPageNo(), request.getPageSize()), request);
         return new PageResponse(request.getPageNo(), page.getTotal(), page.getRecords());
     }
 
@@ -58,14 +57,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     public Long edit(UserEditRequest request) {
         UserEntity userEntity = new UserEntity();
         Long result = Long.valueOf(0);
-        LocalDateTime now = LocalDateTime.now();
         if (request.getId() != null && request.getId() > 0) {
             userEntity = this.getById(request.getId());
-            userEntity.setUpdateDate(now);
+            userEntity.setUpdateDate(LocalDateTime.now());
             userEntity.setUpdaterId(request.getOperateId());
             userEntity.setUpdaterName(request.getOperateName());
         } else {
-            userEntity.setCreateDate(now);
+            userEntity.setCreateDate(LocalDateTime.now());
             userEntity.setCreaterId(request.getOperateId());
             userEntity.setCreaterName(request.getOperateName());
         }
@@ -87,6 +85,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         } else {
             if (this.save(userEntity)) {
                 result = userEntity.getId();
+            }
+        }
+        if (result > 0 && CollectionUtils.isNotEmpty(request.getRoleId())) {
+            LambdaQueryWrapper<UserRoleEntity> queryWrapper = new LambdaQueryWrapper<UserRoleEntity>()
+                    .eq(UserRoleEntity::getUserId, result);
+            List<UserRoleEntity> userRoleEntityList = userRoleMapper.selectList(queryWrapper);
+            for (Long roleId : request.getRoleId()) {
+                Optional<UserRoleEntity> userRoleEntity = userRoleEntityList.stream().filter(m -> roleId.equals(m.getRoleId())).findFirst();
+                if (!userRoleEntity.isPresent()) {
+                    UserRoleEntity userRoleEntityNew = new UserRoleEntity();
+                    userRoleEntityNew.setRoleId(roleId);
+                    userRoleEntityNew.setUserId(result);
+                    userRoleEntityNew.setCreateDate(LocalDateTime.now());
+                    userRoleEntityNew.setCreaterId(request.getOperateId());
+                    userRoleEntityNew.setCreaterName(request.getOperateName());
+                    userRoleMapper.insert(userRoleEntityNew);
+                } else {
+                    userRoleEntityList.remove(userRoleEntity.get());
+                }
+            }
+            if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
+                userRoleMapper.deleteBatchIds(userRoleEntityList.stream().map(UserRoleEntity::getId).collect(Collectors.toList()));
             }
         }
         return result;

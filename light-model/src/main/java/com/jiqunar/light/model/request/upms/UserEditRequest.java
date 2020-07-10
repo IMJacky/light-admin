@@ -4,6 +4,8 @@ import com.jiqunar.light.model.request.BaseRequest;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 用户编辑请求参数
  *
@@ -71,4 +73,10 @@ public class UserEditRequest extends BaseRequest {
      */
     @ApiModelProperty(value = "岗位Id")
     private Long jobId;
+
+    /**
+     * 所属角色
+     */
+    @ApiModelProperty(value = "所属角色")
+    private List<Long> roleId;
 }

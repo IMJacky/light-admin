@@ -4,6 +4,7 @@ import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.request.upms.UserEditRequest;
 import com.jiqunar.light.model.request.upms.UserListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
+import com.jiqunar.light.model.response.PageResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -84,7 +85,14 @@ public class UserController extends BaseController {
     @GetMapping("{id}")
     @ApiOperation("查看单个用户")
     public BaseResponse getOne(@PathVariable Long id) {
-        return BaseResponse.success(userService.getById(id));
+        UserListRequest request = new UserListRequest();
+        request.setId(id);
+        PageResponse pageResponse = userService.page(request);
+        if (pageResponse.getTotalCount() > 0) {
+            return BaseResponse.success(pageResponse.getData().get(0));
+        } else {
+            return BaseResponse.success(null);
+        }
     }
 
     /**
