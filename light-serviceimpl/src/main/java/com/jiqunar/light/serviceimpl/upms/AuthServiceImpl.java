@@ -183,7 +183,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 递归处理用户的系统菜单权限
+     * 用户的系统菜单权限
      *
      * @param menuEntityList
      * @param userMenuResponseList
@@ -205,6 +205,89 @@ public class AuthServiceImpl implements AuthService {
             userMenuResponseList.add(userMenuResponse);
         }
         return userMenuResponseList;
+    }
+
+    /**
+     * 获取用户菜单树形结构
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public UserMenuTreeResponse getUserMenuTree(Long userId) {
+        UserMenuTreeResponse response = new UserMenuTreeResponse();
+        List<MenuEntity> menuEntityAllList = menuService.list();
+        if (CollectionUtils.isNotEmpty(menuEntityAllList)) {
+            List<UserMenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
+            response.setMenuTreeList(userMenuTreeList);
+            UserEntity userEntity = userService.getById(userId);
+            if (userEntity != null) {
+                List<UserRoleEntity> userRoleEntityList = userRoleService.lambdaQuery()
+                        .select(UserRoleEntity::getRoleId)
+                        .eq(UserRoleEntity::getUserId, userEntity.getId())
+                        .list();
+                if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
+                    List<RoleEntity> roleEntityList = roleService.listByIds(userRoleEntityList.stream().map(UserRoleEntity::getRoleId).collect(Collectors.toList()));
+                    if (CollectionUtils.isNotEmpty(roleEntityList)) {
+                        List<RoleMenuEntity> roleMenuEntityList = roleMenuService.lambdaQuery()
+                                .select(RoleMenuEntity::getMenuId)
+                                .in(RoleMenuEntity::getRoleId, roleEntityList.stream().map(RoleEntity::getId).collect(Collectors.toList()))
+                                .list();
+                        if (CollectionUtils.isNotEmpty(roleMenuEntityList)) {
+                            List<MenuEntity> menuEntityList = menuService.listByIds(roleMenuEntityList.stream().map(RoleMenuEntity::getMenuId).distinct().collect(Collectors.toList()));
+                            if (CollectionUtils.isNotEmpty(menuEntityList)) {
+                                response.setMenuTreeCheckedList(getUserMenuTreeKeyList(menuEntityList, "0", new ArrayList<>()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 递归处理用户的系统菜单权限
+     *
+     * @param menuEntityList
+     * @param parentMenuKey
+     * @return
+     */
+    private List<UserMenuTree> getUserMenuTree(List<MenuEntity> menuEntityList, String parentMenuKey, List<UserMenuTree> response) {
+        String[] parentMenuKeySplit = parentMenuKey.split("-");
+        Long parentMenuId = Long.valueOf(parentMenuKeySplit[parentMenuKeySplit.length - 1]);
+        for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getParentMenuId().equals(parentMenuId)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
+            UserMenuTree responseNew = new UserMenuTree();
+            responseNew.setKey(parentMenuKey + "-" + menu.getId());
+            responseNew.setTitle(menu.getMenuName());
+            if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
+                responseNew.setChildren(getUserMenuTree(menuEntityList, responseNew.getKey(), new ArrayList<>()));
+            }
+            response.add(responseNew);
+        }
+        return response;
+    }
+
+    /**
+     * 递归处理用户的系统菜单权限
+     *
+     * @param menuEntityList
+     * @param parentMenuKey
+     * @return
+     */
+    private List<String> getUserMenuTreeKeyList(List<MenuEntity> menuEntityList, String parentMenuKey, List<String> response) {
+        String[] parentMenuKeySplit = parentMenuKey.split("-");
+        Long parentMenuId = Long.valueOf(parentMenuKeySplit[parentMenuKeySplit.length - 1]);
+        for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getParentMenuId().equals(parentMenuId)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
+            String key = parentMenuKey + "-" + menu.getId();
+            if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
+                getUserMenuTreeKeyList(menuEntityList, key, response);
+            }
+            else{
+                response.add(key);
+            }
+        }
+        return response;
     }
 
     /**

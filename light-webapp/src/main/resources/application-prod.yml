@@ -75,6 +75,21 @@ spring:
           log-slow-sql: true
           slow-sql-millis: 2000
       filters: stat,wall
+  rabbitmq:
+    host: 10.154.5.185
+    port: 5672
+    username: guest
+    password: Wjg50058
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动应答
+        concurrency: 5 # 消费端最小并发数
+        max-concurrency: 10 # 消费端最大并发数
+        prefetch: 5 # 一次请求中预处理的消息数量
+      cache:
+        channel:
+          size: 50 # 缓存的channel数量
 #自定义的一些配置
 custom:
   #默认本地开发环境不需要token验证，默认id=1，username=admin
@@ -82,3 +97,7 @@ custom:
     open: false
     userid: 1
     username: admin
+  mq:
+    defaultExchange: default_exchange # 默认交换器
+    defaultQueue: default_queue # 默认队列名
+    defaultRouteKey: default_route_key # 默认路由key

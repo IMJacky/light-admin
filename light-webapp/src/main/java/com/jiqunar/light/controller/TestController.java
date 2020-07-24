@@ -1,10 +1,12 @@
 package com.jiqunar.light.controller;
 
 import com.jiqunar.light.common.RedistUtils;
+import com.jiqunar.light.model.mq.MQConfig;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.RandomUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +30,12 @@ import java.util.*;
 public class TestController {
     @Autowired
     private RedistUtils redistUtils;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private MQConfig mqConfig;
 
     /**
      * 测试随机数
@@ -71,5 +79,19 @@ public class TestController {
                 .subtract(BigDecimal.valueOf(10.47)).setScale(2, BigDecimal.ROUND_HALF_UP);
         redistUtils.put(cacheKey, nowCashPoolAmount.toPlainString());
         return BaseResponse.success(result);
+    }
+
+    /**
+     * 测试随机数
+     *
+     * @return
+     */
+    @GetMapping("/mqSend")
+    @ApiOperation("mq发送消息")
+    public BaseResponse mqSend(Integer count) {
+        for (int i = 0; i < count; i++) {
+            rabbitTemplate.convertAndSend(mqConfig.getDefaultExchange(), mqConfig.getDefaultRouteKey(), count);
+        }
+        return BaseResponse.success(count);
     }
 }
