@@ -34,6 +34,10 @@ spring:
       url: jdbc:mysql://localhost:3306/light_upms?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
       username: root
       password: Wjg50058
+    moonlight:
+      url: jdbc:mysql://localhost:3306/moonlight?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: Wjg50058
     druid:
       # 初始化大小，最小，最大
       initial-size: 5

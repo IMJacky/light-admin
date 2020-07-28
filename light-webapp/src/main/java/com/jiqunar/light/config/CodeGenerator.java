@@ -82,6 +82,16 @@ public class CodeGenerator {
         prefixMap.put("log", "ll_");
         baseEntityMap.put("log", null);
 
+        // 数据源配置
+        DataSourceConfig dscMoonlight = new DataSourceConfig();
+        dscMoonlight.setUrl("jdbc:mysql://localhost:3306/moonlight?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true");
+        dscMoonlight.setDriverName("com.mysql.cj.jdbc.Driver");
+        dscMoonlight.setUsername("root");
+        dscMoonlight.setPassword("Wjg50058");
+        dataSourceMap.put("moonlight", dscMoonlight);
+        prefixMap.put("moonlight", "");
+        baseEntityMap.put("moonlight", BaseEntity.class);
+
         // 包配置
         PackageConfig pc = new PackageConfig();
         String dbname = scanner("数据库：" + dataSourceMap.entrySet().stream().map(m -> m.getKey()).collect(Collectors.joining("，")));

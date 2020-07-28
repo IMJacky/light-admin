@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiqunar.light.dao.moonlight.WxUserMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.jiqunar.light.model.entity.moonlight.WxUserEntity">
+                <result column="id" property="id" />
+                <result column="creater_id" property="createrId" />
+                <result column="creater_name" property="createrName" />
+                <result column="create_date" property="createDate" />
+                <result column="updater_id" property="updaterId" />
+                <result column="updater_name" property="updaterName" />
+                <result column="update_date" property="updateDate" />
+                <result column="is_deleted" property="isDeleted" />
+                    <result column="open_id" property="openId" />
+                    <result column="union_id" property="unionId" />
+                    <result column="last_visit_date" property="lastVisitDate" />
+                    <result column="session_key" property="sessionKey" />
+                    <result column="avatar_url" property="avatarUrl" />
+                    <result column="nick_name" property="nickName" />
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+                id,
+                creater_id,
+                creater_name,
+                create_date,
+                updater_id,
+                updater_name,
+                update_date,
+                is_deleted,
+            open_id, union_id, last_visit_date, session_key, avatar_url, nick_name
+        </sql>
+
+</mapper>
