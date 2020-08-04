@@ -38,6 +38,10 @@ public class BaseResponse<T> {
         return new BaseResponse(StatusCode.Success.getCode(), StatusCode.Success.getMsg(), result);
     }
 
+    public static BaseResponse fail(Object result) {
+        return new BaseResponse(StatusCode.Fail.getCode(), StatusCode.Fail.getMsg(), result);
+    }
+
     public static BaseResponse invalidToken(Object result) {
         return new BaseResponse(StatusCode.InvalidToken.getCode(), StatusCode.InvalidToken.getMsg(), result);
     }

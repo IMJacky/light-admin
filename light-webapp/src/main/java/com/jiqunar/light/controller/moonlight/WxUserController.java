@@ -1,6 +1,8 @@
 package com.jiqunar.light.controller.moonlight;
 
+import com.jiqunar.light.model.request.BaseWxRequest;
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.moonlight.WxLoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -106,5 +108,17 @@ public class WxUserController extends BaseController {
     @ApiOperation("分页查看微信用户信息")
     public BaseResponse page(@RequestBody PageRequest request) {
         return BaseResponse.success(wxUserService.page(request));
+    }
+
+    @PostMapping("/wxlogin")
+    @ApiOperation("微信登录")
+    public BaseResponse wxLogin(@RequestBody WxLoginRequest request) {
+        return wxUserService.wxLogin(request);
+    }
+
+    @PostMapping("/visitrecord")
+    @ApiOperation("新增访问记录")
+    public BaseResponse addVisitRecord(@RequestBody BaseWxRequest request) {
+        return wxUserService.addVisitRecord(request);
     }
 }

@@ -8,6 +8,7 @@ package com.jiqunar.light.model.enums;
  */
 public enum StatusCode {
     Success(200, "成功"),
+    Fail(-1, "失败"),
     InvalidParams(201, "参数无效"),
     InvalidToken(403, "token无效"),
     SystemException(500, "系统异常");

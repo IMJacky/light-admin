@@ -1,6 +1,9 @@
 package com.jiqunar.light.controller.moonlight;
 
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
+import com.jiqunar.light.model.request.moonlight.BillEditRequest;
+import com.jiqunar.light.model.request.moonlight.BillListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -106,5 +109,40 @@ public class BillController extends BaseController {
     @ApiOperation("分页查看账单信息")
     public BaseResponse page(@RequestBody PageRequest request) {
         return BaseResponse.success(billService.page(request));
+    }
+
+    /**
+     * 编辑账单信息
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑账单信息")
+    public BaseResponse save(@RequestBody BillEditRequest request) {
+        return billService.editBill(request);
+    }
+
+    /**
+     * 根据主键Id+用户Id查看账单信息
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/getById")
+    @ApiOperation("根据主键Id+用户Id查看账单信息")
+    public BaseResponse getById(@RequestBody BillEditGetRequest request) {
+        return BaseResponse.success(billService.getById(request));
+    }
+
+    /**
+     * 按日期范围查看账单信息
+     *
+     * @return
+     */
+    @PostMapping("/getbydate")
+    @ApiOperation("按日期范围查看账单信息")
+    public BaseResponse getByDate(@RequestBody BillListRequest request) {
+        return BaseResponse.success(billService.getByDate(request));
     }
 }

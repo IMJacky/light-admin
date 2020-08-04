@@ -66,21 +66,21 @@ public class BillEntity extends BaseEntity {
      */
     @ApiModelProperty(value = "标签")
     @TableField("tag")
-    private Integer tag;
+    private String tag;
 
     /**
      * 子标签
      */
     @ApiModelProperty(value = "子标签")
     @TableField("sub_tag")
-    private Integer subTag;
+    private String subTag;
 
     /**
      * 描述
      */
     @ApiModelProperty(value = "描述")
     @TableField("description")
-    private Integer description;
+    private String description;
 
 
 }
