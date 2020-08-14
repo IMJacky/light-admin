@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2020/7/15 16:43
  */
 @Data
-public class UserMenuTree {
+public class MenuTree {
     /**
      * 节点key
      */
@@ -24,5 +24,5 @@ public class UserMenuTree {
     /**
      * 子节点集合
      */
-    private List<UserMenuTree> children;
+    private List<MenuTree> children;
 }

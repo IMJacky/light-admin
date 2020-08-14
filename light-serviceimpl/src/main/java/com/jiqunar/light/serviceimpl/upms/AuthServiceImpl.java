@@ -214,11 +214,11 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public UserMenuTreeResponse getUserMenuTree(Long userId) {
-        UserMenuTreeResponse response = new UserMenuTreeResponse();
+    public MenuTreeResponse getUserMenuTree(Long userId) {
+        MenuTreeResponse response = new MenuTreeResponse();
         List<MenuEntity> menuEntityAllList = menuService.list();
         if (CollectionUtils.isNotEmpty(menuEntityAllList)) {
-            List<UserMenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
+            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
             response.setMenuTreeList(userMenuTreeList);
             UserEntity userEntity = userService.getById(userId);
             if (userEntity != null) {
@@ -247,17 +247,47 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
+     * 获取角色菜单树形结构
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public MenuTreeResponse getRoleMenuTree(Long roleId) {
+        MenuTreeResponse response = new MenuTreeResponse();
+        List<MenuEntity> menuEntityAllList = menuService.list();
+        if (CollectionUtils.isNotEmpty(menuEntityAllList)) {
+            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
+            response.setMenuTreeList(userMenuTreeList);
+            RoleEntity roleEntity = roleService.getById(roleId);
+            if (roleEntity != null) {
+                List<RoleMenuEntity> roleMenuEntityList = roleMenuService.lambdaQuery()
+                        .select(RoleMenuEntity::getMenuId)
+                        .eq(RoleMenuEntity::getRoleId, roleId)
+                        .list();
+                if (CollectionUtils.isNotEmpty(roleMenuEntityList)) {
+                    List<MenuEntity> menuEntityList = menuService.listByIds(roleMenuEntityList.stream().map(RoleMenuEntity::getMenuId).distinct().collect(Collectors.toList()));
+                    if (CollectionUtils.isNotEmpty(menuEntityList)) {
+                        response.setMenuTreeCheckedList(getUserMenuTreeKeyList(menuEntityList, "0", new ArrayList<>()));
+                    }
+                }
+            }
+        }
+        return response;
+    }
+
+    /**
      * 递归处理用户的系统菜单权限
      *
      * @param menuEntityList
      * @param parentMenuKey
      * @return
      */
-    private List<UserMenuTree> getUserMenuTree(List<MenuEntity> menuEntityList, String parentMenuKey, List<UserMenuTree> response) {
+    private List<MenuTree> getUserMenuTree(List<MenuEntity> menuEntityList, String parentMenuKey, List<MenuTree> response) {
         String[] parentMenuKeySplit = parentMenuKey.split("-");
         Long parentMenuId = Long.valueOf(parentMenuKeySplit[parentMenuKeySplit.length - 1]);
         for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getParentMenuId().equals(parentMenuId)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
-            UserMenuTree responseNew = new UserMenuTree();
+            MenuTree responseNew = new MenuTree();
             responseNew.setKey(parentMenuKey + "-" + menu.getId());
             responseNew.setTitle(menu.getMenuName());
             if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
@@ -282,8 +312,7 @@ public class AuthServiceImpl implements AuthService {
             String key = parentMenuKey + "-" + menu.getId();
             if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
                 getUserMenuTreeKeyList(menuEntityList, key, response);
-            }
-            else{
+            } else {
                 response.add(key);
             }
         }

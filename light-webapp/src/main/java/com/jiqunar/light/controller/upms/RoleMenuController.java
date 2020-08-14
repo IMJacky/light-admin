@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.RoleMenuEditRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -106,5 +107,17 @@ public class RoleMenuController extends BaseController {
     @ApiOperation("分页查看角色菜单")
     public BaseResponse page(@RequestBody PageRequest request) {
         return BaseResponse.success(roleMenuService.page(request));
+    }
+
+    /**
+     * 编辑角色菜单
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑角色菜单")
+    public BaseResponse edit(@RequestBody RoleMenuEditRequest request) {
+        return BaseResponse.success(roleMenuService.edit(request));
     }
 }

@@ -81,4 +81,15 @@ public class AuthController extends BaseController {
     public BaseResponse getUserMenuTree() {
         return BaseResponse.success(authService.getUserMenuTree(baseRequest().getOperateId()));
     }
+
+    /**
+     * 获取角色菜单树形结构
+     *
+     * @return
+     */
+    @GetMapping("/roleMenuTree")
+    @ApiOperation("获取用户菜单树形结构")
+    public BaseResponse getRoleMenuTree(Long roleId) {
+        return BaseResponse.success(authService.getRoleMenuTree(roleId));
+    }
 }

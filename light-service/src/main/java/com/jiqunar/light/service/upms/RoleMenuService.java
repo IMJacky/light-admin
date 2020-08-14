@@ -3,6 +3,7 @@ package com.jiqunar.light.service.upms;
 import com.jiqunar.light.model.entity.upms.RoleMenuEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.upms.RoleMenuEditRequest;
 import com.jiqunar.light.model.response.PageResponse;
 
 /**
@@ -19,4 +20,12 @@ public interface RoleMenuService extends IService<RoleMenuEntity> {
      * @return
      */
     PageResponse page(PageRequest request);
+
+    /**
+     * 编辑角色菜单
+     *
+     * @param request
+     * @return
+     */
+    Boolean edit(RoleMenuEditRequest request);
 }

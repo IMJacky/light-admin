@@ -4,7 +4,7 @@ import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.upms.LoginResponse;
 import com.jiqunar.light.model.response.upms.UserInfoResponse;
 import com.jiqunar.light.model.response.upms.UserMenuResponse;
-import com.jiqunar.light.model.response.upms.UserMenuTreeResponse;
+import com.jiqunar.light.model.response.upms.MenuTreeResponse;
 
 import java.util.List;
 
@@ -45,7 +45,15 @@ public interface AuthService {
      * @param userId
      * @return
      */
-    UserMenuTreeResponse getUserMenuTree(Long userId);
+    MenuTreeResponse getUserMenuTree(Long userId);
+
+    /**
+     * 获取角色菜单树形结构
+     *
+     * @param roleId
+     * @return
+     */
+    MenuTreeResponse getRoleMenuTree(Long roleId);
 
     /**
      * 退出登录
