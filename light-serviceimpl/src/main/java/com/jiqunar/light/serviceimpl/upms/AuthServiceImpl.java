@@ -5,6 +5,7 @@ import com.jiqunar.light.model.entity.upms.*;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.upms.*;
 import com.jiqunar.light.service.upms.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public LoginResponse login(LoginRequest request) {
-        //String aa = DigestUtils.md5Hex(request.getUsername());
         LoginResponse response = new LoginResponse();
         UserEntity userEntity = userService.lambdaQuery()
                 .eq(UserEntity::getUserName, request.getUsername())
@@ -146,6 +146,31 @@ public class AuthServiceImpl implements AuthService {
             //response.setRole();
         }
         return response;
+    }
+
+    /**
+     * 密码重置
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public Boolean passwordReset(Long userId) {
+        Boolean result = false;
+        UserEntity userEntity = userService.getById(userId);
+        if (userEntity != null) {
+            String userKey = userEntity.getId() + "_" + userEntity.getUserName();
+            String oldToken = redistUtils.get(userKey);
+            if (!StringUtils.isBlank(oldToken)) {
+                redistUtils.delete(oldToken);
+            }
+            result = redistUtils.delete(userKey);
+
+            userEntity.setUpdateDate(LocalDateTime.now());
+            userEntity.setPassword(DigestUtils.md5Hex(userEntity.getUserName()));
+            result = userService.updateById(userEntity);
+        }
+        return result;
     }
 
     /**

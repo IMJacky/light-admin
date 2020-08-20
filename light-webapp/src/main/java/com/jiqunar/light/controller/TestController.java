@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -78,6 +82,11 @@ public class TestController {
         BigDecimal nowCashPoolAmount = new BigDecimal(redistUtils.get(cacheKey))
                 .subtract(BigDecimal.valueOf(10.47)).setScale(2, BigDecimal.ROUND_HALF_UP);
         redistUtils.put(cacheKey, nowCashPoolAmount.toPlainString());
+
+        LocalDateTime newRemindTime = LocalDateTime.now().plusMinutes(-5);
+        Long aa = Duration.between(LocalDateTime.now(), newRemindTime).toMinutes();
+
+        LocalDate aaa = LocalDate.parse("2020-08-09 14:22:22", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return BaseResponse.success(result);
     }
 

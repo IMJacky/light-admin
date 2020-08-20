@@ -32,6 +32,14 @@ public interface AuthService {
     UserInfoResponse getUserInfo(Long userId);
 
     /**
+     * 密码重置
+     *
+     * @param userId
+     * @return
+     */
+    Boolean passwordReset(Long userId);
+
+    /**
      * 获取用户菜单
      *
      * @param userId
