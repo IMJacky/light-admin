@@ -5,6 +5,7 @@ import com.jiqunar.light.common.RedistUtils;
 import com.jiqunar.light.model.response.BaseResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author jieguang.wang
  * @date 2020/5/8 15:16
  */
+@Configuration
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private RedistUtils redistUtils;
@@ -26,7 +28,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("Access-Token");
-        if (customConfig.getAuthOpen() && StringUtils.isBlank(token)) {
+        if (customConfig.getAuthOpen()) {
             if (StringUtils.isBlank(token)) {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
