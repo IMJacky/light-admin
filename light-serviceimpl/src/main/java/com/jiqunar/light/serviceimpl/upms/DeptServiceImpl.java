@@ -7,6 +7,7 @@ import com.jiqunar.light.dao.upms.DeptMapper;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.jiqunar.light.model.request.upms.DeptEditRequest;
 import com.jiqunar.light.model.request.upms.DeptListRequest;
+import com.jiqunar.light.model.response.common.CascadeResponse;
 import com.jiqunar.light.service.upms.DeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,9 +18,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 部门 服务实现类
@@ -94,7 +97,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> impleme
      * @return
      */
     @Override
-    public Map<Long, String> listParent() {
+    public Map<Long, String> mapAll() {
         Map<Long, String> result = new HashMap<>();
         result.put(0L, "顶级部门");
         LambdaQueryWrapper<DeptEntity> queryWrapper = new QueryWrapper<DeptEntity>().lambda();
@@ -106,5 +109,35 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> impleme
             });
         }
         return result;
+    }
+
+    /**
+     * 查看所有部门(级联方式)
+     *
+     * @return
+     */
+    @Override
+    public List<CascadeResponse> cascadeAll() {
+        List<CascadeResponse> response = new ArrayList<>();
+        LambdaQueryWrapper<DeptEntity> queryWrapper = new QueryWrapper<DeptEntity>().lambda();
+        queryWrapper.orderByDesc(DeptEntity::getId);
+        List<DeptEntity> menuEntityList = this.list(queryWrapper);
+        if (CollectionUtils.isNotEmpty(menuEntityList)) {
+            response = getCascade(menuEntityList, 0L, new ArrayList<>());
+        }
+        return response;
+    }
+
+    private List<CascadeResponse> getCascade(List<DeptEntity> menuEntityList, Long parentId, List<CascadeResponse> cascadeResponseList) {
+        for (DeptEntity deptEntity : menuEntityList.stream().filter(m -> parentId.equals(m.getParentDeptId())).collect(Collectors.toList())) {
+            CascadeResponse cascadeResponse = new CascadeResponse();
+            cascadeResponse.setLabel(deptEntity.getDeptName());
+            cascadeResponse.setValue(deptEntity.getId().toString());
+            if (menuEntityList.stream().anyMatch(m -> m.getParentDeptId().equals(deptEntity.getId()))) {
+                cascadeResponse.setChildren(getCascade(menuEntityList, deptEntity.getId(), new ArrayList<>()));
+            }
+            cascadeResponseList.add(cascadeResponse);
+        }
+        return cascadeResponseList;
     }
 }

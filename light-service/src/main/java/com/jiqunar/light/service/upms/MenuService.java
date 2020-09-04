@@ -34,9 +34,9 @@ public interface MenuService extends IService<MenuEntity> {
     Long edit(MenuEditRequest request);
 
     /**
-     * 查看所有父级菜单
+     * 查看所有菜单
      *
      * @return
      */
-    Map<Long, String> listParent();
+    Map<Long, String> mapAll();
 }

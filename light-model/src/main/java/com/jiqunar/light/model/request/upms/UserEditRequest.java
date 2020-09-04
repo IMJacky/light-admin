@@ -66,13 +66,19 @@ public class UserEditRequest extends BaseRequest {
      * 部门Id
      */
     @ApiModelProperty(value = "部门Id")
-    private Long deptId;
+    private long deptId;
+
+    /**
+     * 部门Id父子级关系
+     */
+    @ApiModelProperty(value = "部门Id父子级关系")
+    private List<Long> deptIdList;
 
     /**
      * 岗位Id
      */
     @ApiModelProperty(value = "岗位Id")
-    private Long jobId;
+    private long jobId;
 
     /**
      * 所属角色

@@ -97,12 +97,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
     }
 
     /**
-     * 查看所有父级菜单
+     * 查看所有菜单
      *
      * @return
      */
     @Override
-    public Map<Long, String> listParent() {
+    public Map<Long, String> mapAll() {
         Map<Long, String> result = new HashMap<>();
         result.put(0L, "顶级菜单");
         LambdaQueryWrapper<MenuEntity> queryWrapper = new QueryWrapper<MenuEntity>().lambda();

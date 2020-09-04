@@ -76,14 +76,14 @@ public class MenuController extends BaseController {
     }
 
     /**
-     * 查看所有父级菜单
+     * 查看所有菜单
      *
      * @return
      */
-    @GetMapping("/listParent")
-    @ApiOperation("查看所有父级菜单")
+    @GetMapping("/mapAll")
+    @ApiOperation("查看所有单菜单(map格式)")
     public BaseResponse listParent() {
-        return BaseResponse.success(menuService.listParent());
+        return BaseResponse.success(menuService.mapAll());
     }
 
     /**

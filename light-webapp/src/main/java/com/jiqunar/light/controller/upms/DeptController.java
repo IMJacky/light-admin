@@ -73,14 +73,25 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 查看所有父级部门
+     * 查看所有部门(map格式)
      *
      * @return
      */
-    @GetMapping("/listParent")
-    @ApiOperation("查看所有父级部门")
-    public BaseResponse listParent() {
-        return BaseResponse.success(deptService.listParent());
+    @GetMapping("/mapAll")
+    @ApiOperation("查看所有部门(map格式)")
+    public BaseResponse mapAll() {
+        return BaseResponse.success(deptService.mapAll());
+    }
+
+    /**
+     * 查看所有部门(级联方式)
+     *
+     * @return
+     */
+    @GetMapping("/cascadeAll")
+    @ApiOperation("查看所有部门(级联方式)")
+    public BaseResponse cascadeAll() {
+        return BaseResponse.success(deptService.cascadeAll());
     }
 
     /**

@@ -1,8 +1,11 @@
 package com.jiqunar.light.model.entity.upms;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.jiqunar.light.model.entity.BaseEntity;
+
 import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -85,7 +88,7 @@ public class UserEntity extends BaseEntity {
      * 岗位Id
      */
     @ApiModelProperty(value = "岗位Id")
-    @TableField("job_id")
+    @TableField(value = "job_id")
     private Long jobId;
 
     /**

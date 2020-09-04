@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.upms.DeptEditRequest;
 import com.jiqunar.light.model.request.upms.DeptListRequest;
 import com.jiqunar.light.model.response.PageResponse;
+import com.jiqunar.light.model.response.common.CascadeResponse;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,9 +34,16 @@ public interface DeptService extends IService<DeptEntity> {
     Long edit(DeptEditRequest request);
 
     /**
-     * 查看所有父级部门
+     * 查看所有部门
      *
      * @return
      */
-    Map<Long, String> listParent();
+    Map<Long, String> mapAll();
+
+    /**
+     * 查看所有部门(级联方式)
+     *
+     * @return
+     */
+    List<CascadeResponse> cascadeAll();
 }
