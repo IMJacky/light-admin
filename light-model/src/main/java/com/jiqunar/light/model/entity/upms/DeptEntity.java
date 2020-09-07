@@ -17,7 +17,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("lu_dept")
 @ApiModel(value = "DeptEntity对象", description = "部门")
 public class DeptEntity extends BaseEntity {

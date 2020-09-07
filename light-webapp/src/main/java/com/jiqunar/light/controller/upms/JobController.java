@@ -116,6 +116,8 @@ public class JobController extends BaseController {
     @PostMapping("/edit")
     @ApiOperation("编辑岗位")
     public BaseResponse edit(@RequestBody JobEditRequest request) {
+        request.setOperateId(baseRequest().getOperateId());
+        request.setOperateName(baseRequest().getOperateName());
         return BaseResponse.success(jobService.edit(request));
     }
 }

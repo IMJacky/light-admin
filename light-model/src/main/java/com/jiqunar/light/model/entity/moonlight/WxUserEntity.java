@@ -18,7 +18,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("wx_user")
 @ApiModel(value = "WxUserEntity对象", description = "微信用户信息")
 public class WxUserEntity extends BaseEntity {

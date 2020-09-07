@@ -2,14 +2,20 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.common.ObjectUtils;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.jiqunar.light.dao.upms.MenuMapper;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,6 +35,9 @@ import java.util.Map;
  */
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> implements MenuService {
+    @Autowired
+    private LogService logService;
+
     /**
      * 分页获取菜单
      *
@@ -84,6 +93,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
         menuEntity.setPath(request.getPath());
         menuEntity.setSort(request.getSort());
         menuEntity.setType(request.getType());
+        OperateTypeEnum operateTypeEnum = OperateTypeEnum.Update;
         if (request.getId() != null && request.getId() > 0) {
             if (this.updateById(menuEntity)) {
                 result = menuEntity.getId();
@@ -91,7 +101,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> impleme
         } else {
             if (this.save(menuEntity)) {
                 result = menuEntity.getId();
+                operateTypeEnum = OperateTypeEnum.Add;
             }
+        }
+        if (result > 0) {
+            logService.add(operateTypeEnum, result, ObjectUtils.getObject(menuEntity), LogTypeEnum.System, LogSubTypeEnum.Menu, request.getOperateId(), request.getOperateName());
         }
         return result;
     }

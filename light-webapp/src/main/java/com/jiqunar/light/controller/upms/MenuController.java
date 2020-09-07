@@ -130,6 +130,8 @@ public class MenuController extends BaseController {
     @PostMapping("/edit")
     @ApiOperation("编辑菜单")
     public BaseResponse edit(@RequestBody MenuEditRequest request) {
+        request.setOperateId(baseRequest().getOperateId());
+        request.setOperateName(baseRequest().getOperateName());
         return BaseResponse.success(menuService.edit(request));
     }
 }

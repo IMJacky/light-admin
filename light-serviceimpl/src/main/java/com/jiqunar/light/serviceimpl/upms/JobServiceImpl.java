@@ -2,13 +2,19 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.common.ObjectUtils;
 import com.jiqunar.light.model.entity.upms.JobEntity;
 import com.jiqunar.light.dao.upms.JobMapper;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.JobEditRequest;
 import com.jiqunar.light.model.request.upms.JobListRequest;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.JobService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +30,8 @@ import java.time.LocalDateTime;
  */
 @Service
 public class JobServiceImpl extends ServiceImpl<JobMapper, JobEntity> implements JobService {
+    @Autowired
+    private LogService logService;
     /**
      * 分页获取岗位
      *
@@ -67,6 +75,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobEntity> implements
             jobEntity.setCreaterName(request.getOperateName());
         }
         jobEntity.setJobName(request.getJobName());
+        OperateTypeEnum operateTypeEnum = OperateTypeEnum.Update;
         if (request.getId() != null && request.getId() > 0) {
             if (this.updateById(jobEntity)) {
                 result = jobEntity.getId();
@@ -74,7 +83,11 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, JobEntity> implements
         } else {
             if (this.save(jobEntity)) {
                 result = jobEntity.getId();
+                operateTypeEnum = OperateTypeEnum.Add;
             }
+        }
+        if (result > 0) {
+            logService.add(operateTypeEnum, result, ObjectUtils.getObject(jobEntity), LogTypeEnum.System, LogSubTypeEnum.Job, request.getOperateId(), request.getOperateName());
         }
         return result;
     }

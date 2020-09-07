@@ -17,11 +17,10 @@ import lombok.experimental.Accessors;
  * 日志
  *
  * @author auto generator
- * @since 2020-06-04
+ * @since 2020-09-07
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @TableName("ll_log")
 @ApiModel(value = "LogEntity对象", description = "日志")
 public class LogEntity implements Serializable {
@@ -36,18 +35,32 @@ public class LogEntity implements Serializable {
     private Long id;
 
     /**
+     * 关联表的主键Id
+     */
+    @ApiModelProperty(value = "关联表的主键Id")
+    @TableField("relate_id")
+    private Long relateId;
+
+    /**
+     * 操作类型：0-新增，1-修改，2-删除
+     */
+    @ApiModelProperty(value = "操作类型：0-新增，1-修改，2-删除")
+    @TableField("operate_type")
+    private Integer operateType;
+
+    /**
      * 日志类型
      */
     @ApiModelProperty(value = "日志类型")
     @TableField("log_type")
-    private String logType;
+    private Integer logType;
 
     /**
      * 日志子类型
      */
     @ApiModelProperty(value = "日志子类型")
     @TableField("log_sub_type")
-    private String logSubType;
+    private Integer logSubType;
 
     /**
      * 日志信息
@@ -62,6 +75,20 @@ public class LogEntity implements Serializable {
     @ApiModelProperty(value = "创建时间")
     @TableField("create_date")
     private LocalDateTime createDate;
+
+    /**
+     * 创建人Id
+     */
+    @ApiModelProperty(value = "创建人Id")
+    @TableField("creater_id")
+    private Long createrId;
+
+    /**
+     * 创建人名字
+     */
+    @ApiModelProperty(value = "创建人名字")
+    @TableField("creater_name")
+    private String createrName;
 
     /**
      * 是否删除（0未删除，1已删除）

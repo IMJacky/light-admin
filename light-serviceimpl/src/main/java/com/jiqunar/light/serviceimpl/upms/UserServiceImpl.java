@@ -2,15 +2,20 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.common.ObjectUtils;
 import com.jiqunar.light.dao.upms.DeptMapper;
 import com.jiqunar.light.dao.upms.UserRoleMapper;
 import com.jiqunar.light.model.entity.upms.DeptEntity;
 import com.jiqunar.light.model.entity.upms.UserEntity;
 import com.jiqunar.light.dao.upms.UserMapper;
 import com.jiqunar.light.model.entity.upms.UserRoleEntity;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.UserEditRequest;
 import com.jiqunar.light.model.request.upms.UserListRequest;
 import com.jiqunar.light.model.response.upms.UserListResponse;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
@@ -41,6 +46,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     private UserRoleMapper userRoleMapper;
     @Autowired
     private DeptMapper deptMapper;
+    @Autowired
+    private LogService logService;
 
     /**
      * 分页获取用户
@@ -114,6 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             request.setDeptId(request.getDeptIdList().get(request.getDeptIdList().size() - 1));
         }
         userEntity.setDeptId(request.getDeptId());
+        OperateTypeEnum operateTypeEnum = OperateTypeEnum.Update;
         if (request.getId() != null && request.getId() > 0) {
             if (this.updateById(userEntity)) {
                 result = userEntity.getId();
@@ -121,6 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         } else {
             if (this.save(userEntity)) {
                 result = userEntity.getId();
+                operateTypeEnum = OperateTypeEnum.Add;
             }
         }
         if (result > 0 && CollectionUtils.isNotEmpty(request.getRoleId())) {
@@ -144,6 +153,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             if (CollectionUtils.isNotEmpty(userRoleEntityList)) {
                 userRoleMapper.deleteBatchIds(userRoleEntityList.stream().map(UserRoleEntity::getId).collect(Collectors.toList()));
             }
+
+            logService.add(operateTypeEnum, result, ObjectUtils.getObject(userEntity), LogTypeEnum.System, LogSubTypeEnum.User, request.getOperateId(), request.getOperateName());
         }
         return result;
     }

@@ -118,6 +118,8 @@ public class RoleController extends BaseController {
     @PostMapping("/edit")
     @ApiOperation("编辑角色")
     public BaseResponse edit(@RequestBody RoleEditRequest request) {
+        request.setOperateId(baseRequest().getOperateId());
+        request.setOperateName(baseRequest().getOperateName());
         return BaseResponse.success(roleService.edit(request));
     }
 }

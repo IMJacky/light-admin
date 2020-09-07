@@ -2,16 +2,22 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.common.ObjectUtils;
 import com.jiqunar.light.model.entity.upms.DeptEntity;
 import com.jiqunar.light.dao.upms.DeptMapper;
 import com.jiqunar.light.model.entity.upms.MenuEntity;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.DeptEditRequest;
 import com.jiqunar.light.model.request.upms.DeptListRequest;
 import com.jiqunar.light.model.response.common.CascadeResponse;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.DeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,6 +38,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> implements DeptService {
+    @Autowired
+    private LogService logService;
     /**
      * 分页获取部门
      *
@@ -79,6 +87,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> impleme
         }
         deptEntity.setDeptName(request.getDeptName());
         deptEntity.setParentDeptId(request.getParentDeptId());
+        OperateTypeEnum operateTypeEnum = OperateTypeEnum.Update;
         if (request.getId() != null && request.getId() > 0) {
             if (this.updateById(deptEntity)) {
                 result = deptEntity.getId();
@@ -86,7 +95,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, DeptEntity> impleme
         } else {
             if (this.save(deptEntity)) {
                 result = deptEntity.getId();
+                operateTypeEnum = OperateTypeEnum.Add;
             }
+        }
+        if (result > 0) {
+            logService.add(operateTypeEnum, result, ObjectUtils.getObject(deptEntity), LogTypeEnum.System, LogSubTypeEnum.Dept, request.getOperateId(), request.getOperateName());
         }
         return result;
     }

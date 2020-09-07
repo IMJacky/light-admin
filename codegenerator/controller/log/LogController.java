@@ -1,7 +1,6 @@
 package com.jiqunar.light.controller.log;
 
 import com.jiqunar.light.model.request.PageRequest;
-import com.jiqunar.light.model.request.log.LogListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,7 +104,7 @@ public class LogController extends BaseController {
      */
     @PostMapping("/page")
     @ApiOperation("分页查看日志")
-    public BaseResponse page(@RequestBody LogListRequest request) {
+    public BaseResponse page(@RequestBody PageRequest request) {
         return BaseResponse.success(logService.page(request));
     }
 }

@@ -127,6 +127,8 @@ public class UserController extends BaseController {
     @PostMapping("/edit")
     @ApiOperation("编辑用户")
     public BaseResponse edit(@RequestBody UserEditRequest request) {
+        request.setOperateId(baseRequest().getOperateId());
+        request.setOperateName(baseRequest().getOperateName());
         return BaseResponse.success(userService.edit(request));
     }
 }

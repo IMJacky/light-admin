@@ -5,16 +5,20 @@
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="com.jiqunar.light.model.entity.log.LogEntity">
                     <id column="id" property="id" />
+                    <result column="relate_id" property="relateId" />
+                    <result column="operate_type" property="operateType" />
                     <result column="log_type" property="logType" />
                     <result column="log_sub_type" property="logSubType" />
                     <result column="message" property="message" />
                     <result column="create_date" property="createDate" />
+                    <result column="creater_id" property="createrId" />
+                    <result column="creater_name" property="createrName" />
                     <result column="is_deleted" property="isDeleted" />
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-            id, log_type, log_sub_type, message, create_date, is_deleted
+            id, relate_id, operate_type, log_type, log_sub_type, message, create_date, creater_id, creater_name, is_deleted
         </sql>
 
 </mapper>

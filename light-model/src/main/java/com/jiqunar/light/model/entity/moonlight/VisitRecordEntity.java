@@ -17,7 +17,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("visit_record")
 @ApiModel(value = "VisitRecordEntity对象", description = "访问记录")
 public class VisitRecordEntity extends BaseEntity {

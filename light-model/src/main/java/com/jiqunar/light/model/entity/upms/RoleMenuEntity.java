@@ -17,7 +17,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("lu_role_menu")
 @ApiModel(value = "RoleMenuEntity对象", description = "角色菜单")
 public class RoleMenuEntity extends BaseEntity {

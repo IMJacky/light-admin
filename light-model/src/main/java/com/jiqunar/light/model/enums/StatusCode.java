@@ -1,5 +1,8 @@
 package com.jiqunar.light.model.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 状态码枚举值
  *
@@ -16,31 +19,19 @@ public enum StatusCode {
     /**
      * 状态码
      */
+    @Getter
+    @Setter
     private Integer code;
 
     /**
      * 状态码描述信息
      */
+    @Getter
+    @Setter
     private String msg;
 
     StatusCode(Integer code, String msg) {
         this.code = code;
-        this.msg = msg;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
         this.msg = msg;
     }
 }

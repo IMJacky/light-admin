@@ -2,13 +2,19 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jiqunar.light.common.ObjectUtils;
 import com.jiqunar.light.model.entity.upms.RoleEntity;
 import com.jiqunar.light.dao.upms.RoleMapper;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.RoleEditRequest;
 import com.jiqunar.light.model.request.upms.RoleListRequest;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.RoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jiqunar.light.model.response.PageResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -24,6 +30,8 @@ import java.time.LocalDateTime;
  */
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> implements RoleService {
+    @Autowired
+    private LogService logService;
     /**
      * 分页获取角色
      *
@@ -71,6 +79,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> impleme
         }
         roleEntity.setDescription(request.getDescription());
         roleEntity.setRoleName(request.getRoleName());
+        OperateTypeEnum operateTypeEnum = OperateTypeEnum.Update;
         if (request.getId() != null && request.getId() > 0) {
             if (this.updateById(roleEntity)) {
                 result = roleEntity.getId();
@@ -78,7 +87,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity> impleme
         } else {
             if (this.save(roleEntity)) {
                 result = roleEntity.getId();
+                operateTypeEnum = OperateTypeEnum.Add;
             }
+        }
+        if (result > 0) {
+            logService.add(operateTypeEnum, result, ObjectUtils.getObject(roleEntity), LogTypeEnum.System, LogSubTypeEnum.Role, request.getOperateId(), request.getOperateName());
         }
         return result;
     }

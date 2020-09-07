@@ -19,7 +19,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("bill")
 @ApiModel(value = "BillEntity对象", description = "账单信息")
 public class BillEntity extends BaseEntity {
