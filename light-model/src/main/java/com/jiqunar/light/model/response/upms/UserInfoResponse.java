@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户信息响应实体
@@ -60,6 +61,18 @@ public class UserInfoResponse {
      */
     @ApiModelProperty(value = "手机号")
     private String telephone;
+
+    /**
+     * 所属岗位
+     */
+    @ApiModelProperty(value = "所属岗位")
+    private String jobName;
+
+    /**
+     * 所属部门
+     */
+    @ApiModelProperty(value = "所属部门")
+    private List<String> deptNameList;
 
     /**
      * 上次登录ip

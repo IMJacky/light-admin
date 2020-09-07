@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +33,10 @@ public class AuthServiceImpl implements AuthService {
     private RoleMenuService roleMenuService;
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private JobService jobService;
+    @Autowired
+    private DeptService deptService;
 
     /**
      * 登录
@@ -95,6 +96,18 @@ public class AuthServiceImpl implements AuthService {
             response.setNickname(userEntity.getNickName());
             response.setTelephone(userEntity.getPhone());
             response.setUsername(userEntity.getUserName());
+            if (!userEntity.getDeptId().equals(0L)) {
+                List<String> deptNameList = new ArrayList<>();
+                getDeptNameListById(deptNameList, userEntity.getDeptId());
+                Collections.reverse(deptNameList);
+                response.setDeptNameList(deptNameList);
+            }
+            if (!userEntity.getJobId().equals(0L)) {
+                JobEntity jobEntity = jobService.getById(userEntity.getJobId());
+                if (jobEntity != null) {
+                    response.setJobName(jobEntity.getJobName());
+                }
+            }
             List<UserRoleEntity> userRoleEntityList = userRoleService.lambdaQuery()
                     .select(UserRoleEntity::getRoleId)
                     .eq(UserRoleEntity::getUserId, userEntity.getId())
@@ -146,6 +159,17 @@ public class AuthServiceImpl implements AuthService {
             //response.setRole();
         }
         return response;
+    }
+
+    private List<String> getDeptNameListById(List<String> deptNameList, Long deptId) {
+        DeptEntity deptEntity = deptService.getById(deptId);
+        if (deptEntity != null) {
+            deptNameList.add(deptEntity.getDeptName());
+            if (!deptEntity.getParentDeptId().equals(0L)) {
+                getDeptNameListById(deptNameList, deptEntity.getParentDeptId());
+            }
+        }
+        return deptNameList;
     }
 
     /**
