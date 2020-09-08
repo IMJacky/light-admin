@@ -36,7 +36,6 @@ public class RedistUtils {
     public void put(Object key, Object value) {
         if (verifyParam(key, value)) {
             redisTemplate.opsForValue().set(key, value);
-            ;
         }
     }
 
