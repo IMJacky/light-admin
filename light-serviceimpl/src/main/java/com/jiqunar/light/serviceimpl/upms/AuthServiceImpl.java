@@ -267,7 +267,7 @@ public class AuthServiceImpl implements AuthService {
         MenuTreeResponse response = new MenuTreeResponse();
         List<MenuEntity> menuEntityAllList = menuService.list();
         if (CollectionUtils.isNotEmpty(menuEntityAllList)) {
-            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
+            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>(), new ArrayList<>());
             response.setMenuTreeList(userMenuTreeList);
             UserEntity userEntity = userService.getById(userId);
             if (userEntity != null) {
@@ -306,8 +306,10 @@ public class AuthServiceImpl implements AuthService {
         MenuTreeResponse response = new MenuTreeResponse();
         List<MenuEntity> menuEntityAllList = menuService.list();
         if (CollectionUtils.isNotEmpty(menuEntityAllList)) {
-            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>());
+            List<String> menuTreeExpandList = new ArrayList<>();
+            List<MenuTree> userMenuTreeList = getUserMenuTree(menuEntityAllList, "0", new ArrayList<>(), menuTreeExpandList);
             response.setMenuTreeList(userMenuTreeList);
+            response.setMenuTreeExpandList(menuTreeExpandList);
             RoleEntity roleEntity = roleService.getById(roleId);
             if (roleEntity != null) {
                 List<RoleMenuEntity> roleMenuEntityList = roleMenuService.lambdaQuery()
@@ -332,7 +334,7 @@ public class AuthServiceImpl implements AuthService {
      * @param parentMenuKey
      * @return
      */
-    private List<MenuTree> getUserMenuTree(List<MenuEntity> menuEntityList, String parentMenuKey, List<MenuTree> response) {
+    private List<MenuTree> getUserMenuTree(List<MenuEntity> menuEntityList, String parentMenuKey, List<MenuTree> response, List<String> menuTreeExpandList) {
         String[] parentMenuKeySplit = parentMenuKey.split("-");
         Long parentMenuId = Long.valueOf(parentMenuKeySplit[parentMenuKeySplit.length - 1]);
         for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getParentMenuId().equals(parentMenuId)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
@@ -340,7 +342,8 @@ public class AuthServiceImpl implements AuthService {
             responseNew.setKey(parentMenuKey + "-" + menu.getId());
             responseNew.setTitle(menu.getMenuName());
             if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
-                responseNew.setChildren(getUserMenuTree(menuEntityList, responseNew.getKey(), new ArrayList<>()));
+                menuTreeExpandList.add(responseNew.getKey());
+                responseNew.setChildren(getUserMenuTree(menuEntityList, responseNew.getKey(), new ArrayList<>(), menuTreeExpandList));
             }
             response.add(responseNew);
         }
@@ -359,10 +362,9 @@ public class AuthServiceImpl implements AuthService {
         Long parentMenuId = Long.valueOf(parentMenuKeySplit[parentMenuKeySplit.length - 1]);
         for (MenuEntity menu : menuEntityList.stream().filter(m -> m.getParentMenuId().equals(parentMenuId)).sorted(Comparator.comparingInt(m -> m.getSort())).collect(Collectors.toList())) {
             String key = parentMenuKey + "-" + menu.getId();
+            response.add(key);
             if (menuEntityList.stream().anyMatch(m -> m.getParentMenuId().equals(menu.getId()))) {
                 getUserMenuTreeKeyList(menuEntityList, key, response);
-            } else {
-                response.add(key);
             }
         }
         return response;

@@ -17,6 +17,11 @@ public class MenuTreeResponse {
     private List<String> menuTreeCheckedList;
 
     /**
+     * 默认展开的节点集合（默认全部）
+     */
+    private List<String> menuTreeExpandList;
+
+    /**
      * 所有的菜单集合
      */
     private List<MenuTree> menuTreeList;

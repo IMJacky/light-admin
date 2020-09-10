@@ -130,16 +130,14 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 编辑用户
+     * 编辑部门
      *
      * @param request
      * @return
      */
     @PostMapping("/edit")
-    @ApiOperation("编辑用户")
+    @ApiOperation("编辑部门")
     public BaseResponse edit(@RequestBody DeptEditRequest request) {
-        request.setOperateId(baseRequest().getOperateId());
-        request.setOperateName(baseRequest().getOperateName());
         return BaseResponse.success(deptService.edit(request));
     }
 }

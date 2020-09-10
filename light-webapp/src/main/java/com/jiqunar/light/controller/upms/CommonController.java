@@ -1,5 +1,6 @@
 package com.jiqunar.light.controller.upms;
 
+import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.upms.ExecuteSqlRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.service.upms.CommonService;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("common")
 @Api(tags = "公共相关接口")
 @Validated
-public class CommonController {
+public class CommonController extends BaseController {
     @Autowired
     private CommonService commonService;
 
