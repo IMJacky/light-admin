@@ -85,8 +85,8 @@ public class TestController {
 
         LocalDateTime newRemindTime = LocalDateTime.now().plusMinutes(-5);
         Long aa = Duration.between(LocalDateTime.now(), newRemindTime).toMinutes();
-
-        LocalDate aaa = LocalDate.parse("2020-08-09 14:22:22", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        newRemindTime = newRemindTime.plusMinutes(10);
+        Integer aaa = newRemindTime.compareTo(LocalDateTime.now());
         return BaseResponse.success(result);
     }
 

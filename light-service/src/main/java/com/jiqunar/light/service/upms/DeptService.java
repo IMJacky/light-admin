@@ -6,6 +6,7 @@ import com.jiqunar.light.model.request.upms.DeptEditRequest;
 import com.jiqunar.light.model.request.upms.DeptListRequest;
 import com.jiqunar.light.model.response.PageResponse;
 import com.jiqunar.light.model.response.common.CascadeResponse;
+import com.jiqunar.light.model.response.upms.DeptListResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,14 @@ public interface DeptService extends IService<DeptEntity> {
      * @return
      */
     PageResponse page(DeptListRequest request);
+
+    /**
+     * 获取部门列表
+     *
+     * @param request
+     * @return
+     */
+    List<DeptListResponse> getDeptList(DeptListRequest request);
 
     /**
      * 编辑部门

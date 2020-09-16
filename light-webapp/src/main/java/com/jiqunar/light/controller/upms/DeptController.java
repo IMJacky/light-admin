@@ -130,6 +130,17 @@ public class DeptController extends BaseController {
     }
 
     /**
+     * 获取部门列表
+     *
+     * @return
+     */
+    @PostMapping("/deptList")
+    @ApiOperation("获取部门列表")
+    public BaseResponse getDeptList(@RequestBody DeptListRequest request) {
+        return BaseResponse.success(deptService.getDeptList(request));
+    }
+
+    /**
      * 编辑部门
      *
      * @param request

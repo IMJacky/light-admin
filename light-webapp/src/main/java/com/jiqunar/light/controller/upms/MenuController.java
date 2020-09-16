@@ -1,19 +1,15 @@
 package com.jiqunar.light.controller.upms;
 
-import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.controller.BaseController;
+import com.jiqunar.light.model.entity.upms.MenuEntity;
 import com.jiqunar.light.model.request.upms.MenuEditRequest;
 import com.jiqunar.light.model.request.upms.MenuListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
+import com.jiqunar.light.service.upms.MenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.jiqunar.light.model.entity.upms.MenuEntity;
-import com.jiqunar.light.service.upms.MenuService;
-import org.springframework.web.bind.annotation.RestController;
-import com.jiqunar.light.controller.BaseController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 菜单 前端控制器
@@ -119,6 +115,17 @@ public class MenuController extends BaseController {
     @ApiOperation("分页查看菜单")
     public BaseResponse page(@RequestBody MenuListRequest request) {
         return BaseResponse.success(menuService.page(request));
+    }
+
+    /**
+     * 获取菜单列表
+     *
+     * @return
+     */
+    @PostMapping("/menuList")
+    @ApiOperation("获取菜单列表")
+    public BaseResponse getMenuList(@RequestBody MenuListRequest request) {
+        return BaseResponse.success(menuService.getMenuList(request));
     }
 
     /**
