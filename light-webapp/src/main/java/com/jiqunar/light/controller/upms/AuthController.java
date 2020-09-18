@@ -67,8 +67,8 @@ public class AuthController extends BaseController {
      */
     @GetMapping("/passwordReset")
     @ApiOperation("密码重置")
-    public BaseResponse passwordReset(Long userd) {
-        return BaseResponse.success(authService.passwordReset(userd));
+    public BaseResponse passwordReset(Long userId) {
+        return BaseResponse.success(authService.passwordReset(userId));
     }
 
     /**
