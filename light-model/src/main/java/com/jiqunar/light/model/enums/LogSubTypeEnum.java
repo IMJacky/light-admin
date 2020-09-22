@@ -8,6 +8,7 @@ import lombok.Setter;
  * @date 2020/9/7 16:59
  */
 public enum LogSubTypeEnum {
+    Login(0, "登录"),
     Menu(1, "菜单"),
     User(2, "用户"),
     Role(3, "角色"),

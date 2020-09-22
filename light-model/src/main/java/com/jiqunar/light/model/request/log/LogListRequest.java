@@ -1,11 +1,10 @@
 package com.jiqunar.light.model.request.log;
 
-import com.jiqunar.light.model.request.BaseRequest;
 import com.jiqunar.light.model.request.PageRequest;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * 日志列表请求参数
@@ -35,9 +34,9 @@ public class LogListRequest extends PageRequest {
     /**
      * 查询开始日期
      */
-    private LocalDateTime beginDate;
+    private LocalDate beginDate;
     /**
      * 查询结束日期
      */
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 }

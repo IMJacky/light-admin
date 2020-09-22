@@ -1,6 +1,7 @@
 package com.jiqunar.light.model.response.upms;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.jiqunar.light.model.response.common.BarResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,6 +47,12 @@ public class WorkplaceResponse {
      */
     @ApiModelProperty(value = "快捷导航列表")
     private List<QuickNav> quickNavList;
+
+    /**
+     * 登录统计柱状图
+     */
+    @ApiModelProperty(value = "登录统计柱状图")
+    private List<BarResponse> barLoginList;
 
     @Data
     @ApiModel(value = "系统功能实体", description = "系统功能实体")

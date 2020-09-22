@@ -1,10 +1,15 @@
 package com.jiqunar.light.serviceimpl.upms;
 
+import com.jiqunar.light.dao.log.LogMapper;
 import com.jiqunar.light.dao.upms.DeptMapper;
 import com.jiqunar.light.dao.upms.JobMapper;
 import com.jiqunar.light.dao.upms.UserMapper;
 import com.jiqunar.light.model.entity.upms.DeptEntity;
 import com.jiqunar.light.model.entity.upms.UserEntity;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.request.log.LogListRequest;
+import com.jiqunar.light.model.response.common.BarResponse;
 import com.jiqunar.light.model.response.upms.WorkplaceResponse;
 import com.jiqunar.light.service.upms.WorkplaceService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,9 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 工作台服务实现
@@ -30,6 +39,8 @@ public class WorkplaceServiceImpl implements WorkplaceService {
     private DeptMapper deptMapper;
     @Autowired
     private JobMapper jobMapper;
+    @Autowired
+    private LogMapper logMapper;
 
     /**
      * 工作台详情
@@ -147,15 +158,15 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         quickNav2.setUrl("https://jiqunar.com/dashboard/workplace");
 
         WorkplaceResponse.QuickNav quickNav3 = new WorkplaceResponse.QuickNav();
-        quickNav3.setTitle("Swagger接口文档");
+        quickNav3.setTitle("接口文档");
         quickNav3.setUrl("https://api.jiqunar.com/swagger-ui.html");
 
         WorkplaceResponse.QuickNav quickNav4 = new WorkplaceResponse.QuickNav();
-        quickNav4.setTitle("Jenkins自动化部署");
+        quickNav4.setTitle("自动化部署");
         quickNav4.setUrl("http://ci.jiqunar.com");
 
         WorkplaceResponse.QuickNav quickNav5 = new WorkplaceResponse.QuickNav();
-        quickNav5.setTitle("数据库监控Druid");
+        quickNav5.setTitle("数据库监控");
         quickNav5.setUrl("http://api.jiqunar.com/druid/login.html");
 
         quickNavList.add(quickNav);
@@ -165,6 +176,29 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         quickNavList.add(quickNav4);
         quickNavList.add(quickNav5);
         workplaceResponse.setQuickNavList(quickNavList);
+
+        LogListRequest logListRequest = new LogListRequest();
+        LocalDate beginDate = LocalDate.now().plusDays(-7);
+        LocalDate endDate = LocalDate.now().plusDays(1);
+        logListRequest.setBeginDate(beginDate);
+        logListRequest.setEndDate(endDate);
+        logListRequest.setLogType(LogTypeEnum.System.getCode());
+        logListRequest.setLogSubType(LogSubTypeEnum.Login.getCode());
+        List<BarResponse> barResponseList = new ArrayList<>();
+        List<BarResponse> barResponseListExist = logMapper.logBar(logListRequest);
+        Stream.iterate(beginDate, LocalDate -> LocalDate.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(beginDate, endDate))
+                .map(LocalDate::getDayOfMonth).forEach(m -> {
+            BarResponse barResponse = new BarResponse();
+            barResponse.setX(m.toString() + "日");
+            if (barResponseListExist.stream().anyMatch(n -> n.getX().equals(m.toString()))) {
+                barResponse.setY(barResponseListExist.stream().filter(n -> n.getX().equals(m.toString())).findFirst().get().getY());
+            } else {
+                barResponse.setY(0L);
+            }
+            barResponseList.add(barResponse);
+        });
+        workplaceResponse.setBarLoginList(barResponseList);
 
         return workplaceResponse;
     }

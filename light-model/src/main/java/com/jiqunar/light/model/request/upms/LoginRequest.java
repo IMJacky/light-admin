@@ -31,4 +31,10 @@ public class LoginRequest {
      */
     @ApiModelProperty(value = "记住我一周")
     private Boolean rememberMe;
+
+    /**
+     * 需要记录的日志信息
+     */
+    @ApiModelProperty(value = "需要记录的日志信息")
+    private String logMessage;
 }

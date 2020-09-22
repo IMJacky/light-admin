@@ -2,8 +2,12 @@ package com.jiqunar.light.serviceimpl.upms;
 
 import com.jiqunar.light.common.RedistUtils;
 import com.jiqunar.light.model.entity.upms.*;
+import com.jiqunar.light.model.enums.LogSubTypeEnum;
+import com.jiqunar.light.model.enums.LogTypeEnum;
+import com.jiqunar.light.model.enums.OperateTypeEnum;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.upms.*;
+import com.jiqunar.light.service.log.LogService;
 import com.jiqunar.light.service.upms.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,6 +41,8 @@ public class AuthServiceImpl implements AuthService {
     private JobService jobService;
     @Autowired
     private DeptService deptService;
+    @Autowired
+    private LogService logService;
 
     /**
      * 登录
@@ -52,10 +58,11 @@ public class AuthServiceImpl implements AuthService {
                 .eq(UserEntity::getPassword, request.getPassword()).one();
         if (userEntity != null) {
             String userKey = userEntity.getId() + "_" + userEntity.getUserName();
-            String oldToken = redistUtils.get(userKey);
-            if (!StringUtils.isBlank(oldToken)) {
-                redistUtils.delete(oldToken);
-            }
+            // 如果需要账号全局唯一登录，注释放开即可
+            // String oldToken = redistUtils.get(userKey);
+            // if (!StringUtils.isBlank(oldToken)) {
+            //     redistUtils.delete(oldToken);
+            // }
             String token = UUID.randomUUID().toString().replace("-", "");
             Long expireSecond = 24 * 60 * 60L;
             if (request.getRememberMe() != null && request.getRememberMe()) {
@@ -67,6 +74,8 @@ public class AuthServiceImpl implements AuthService {
             userService.lambdaUpdate()
                     .set(UserEntity::getVisitDate, LocalDateTime.now())
                     .eq(UserEntity::getId, userEntity.getId()).update();
+
+            logService.add(OperateTypeEnum.Update, userEntity.getId(), request.getLogMessage(), LogTypeEnum.System, LogSubTypeEnum.Login, userEntity.getId(), userEntity.getUserName());
 
             response.setToken(token);
         }

@@ -2,23 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jiqunar.light.dao.log.LogMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="com.jiqunar.light.model.entity.log.LogEntity">
-                    <id column="id" property="id" />
-                    <result column="relate_id" property="relateId" />
-                    <result column="operate_type" property="operateType" />
-                    <result column="log_type" property="logType" />
-                    <result column="log_sub_type" property="logSubType" />
-                    <result column="message" property="message" />
-                    <result column="create_date" property="createDate" />
-                    <result column="creater_id" property="createrId" />
-                    <result column="creater_name" property="createrName" />
-                    <result column="is_deleted" property="isDeleted" />
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jiqunar.light.model.entity.log.LogEntity">
+        <id column="id" property="id"/>
+        <result column="relate_id" property="relateId"/>
+        <result column="operate_type" property="operateType"/>
+        <result column="log_type" property="logType"/>
+        <result column="log_sub_type" property="logSubType"/>
+        <result column="message" property="message"/>
+        <result column="create_date" property="createDate"/>
+        <result column="creater_id" property="createrId"/>
+        <result column="creater_name" property="createrName"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
             id, relate_id, operate_type, log_type, log_sub_type, message, create_date, creater_id, creater_name, is_deleted
         </sql>
+    <select id="logBar" resultType="com.jiqunar.light.model.response.common.BarResponse"
+            parameterType="com.jiqunar.light.model.request.log.LogListRequest">
+        SELECT DATE_FORMAT(create_date, '%d') x, COUNT(1) y
+        FROM ll_log
+        <where>
+            is_deleted = 0
+            <if test="beginDate!=null">
+                and create_date &gt; #{beginDate}
+            </if>
+            <if test="endDate!=null">
+                and create_date &lt; #{endDate}
+            </if>
+            <if test="logType!=null">
+                and log_type = #{logType}
+            </if>
+            <if test="logSubType!=null">
+                and log_sub_type = #{logSubType}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(create_date, '%Y-%m-%d')
+    </select>
 
 </mapper>

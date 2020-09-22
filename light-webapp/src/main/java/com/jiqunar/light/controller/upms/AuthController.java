@@ -1,5 +1,6 @@
 package com.jiqunar.light.controller.upms;
 
+import com.alibaba.druid.util.DruidWebUtils;
 import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
@@ -11,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 权限相关接口
@@ -26,6 +28,8 @@ import javax.validation.constraints.NotNull;
 public class AuthController extends BaseController {
     @Autowired
     private AuthService authService;
+    @Resource
+    private HttpServletRequest httpServletRequest;
 
     /**
      * 登录
@@ -35,6 +39,9 @@ public class AuthController extends BaseController {
     @PostMapping("/login")
     @ApiOperation("登录")
     public BaseResponse<LoginResponse> login(@RequestBody @Validated LoginRequest request) {
+        String ipAddress = DruidWebUtils.getRemoteAddr(httpServletRequest);
+        String userAgent = httpServletRequest.getHeader("user-agent");
+        request.setLogMessage(String.format("IP地址：%s\n浏览器信息：%s", ipAddress, userAgent));
         return BaseResponse.success(authService.login(request));
     }
 
