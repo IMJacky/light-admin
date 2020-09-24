@@ -16,6 +16,14 @@ import java.time.LocalDate;
 @ApiModel(value = "日志列表请求参数", description = "日志列表请求参数")
 public class LogListRequest extends PageRequest {
     /**
+     * 用户id
+     */
+    private Long userId;
+    /**
+     * 用户名
+     */
+    private String userName;
+    /**
      * 操作类型
      */
     private Integer operateType;

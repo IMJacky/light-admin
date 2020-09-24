@@ -43,11 +43,11 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, LogEntity> implements
         IPage<LogEntity> page = new Page<>(request.getPageNo(), request.getPageSize());
         LambdaQueryWrapper<LogEntity> queryWrapper = new QueryWrapper<LogEntity>().lambda();
         List<LogListResponse> logListResponseList = new ArrayList<>();
-        if (request.getOperateId() != null) {
-            queryWrapper.eq(LogEntity::getCreaterId, request.getOperateId());
+        if (request.getUserId() != null) {
+            queryWrapper.eq(LogEntity::getCreaterId, request.getUserId());
         }
-        if (StringUtils.isNotBlank(request.getOperateName())) {
-            queryWrapper.like(LogEntity::getCreaterName, request.getOperateName());
+        if (StringUtils.isNotBlank(request.getUserName())) {
+            queryWrapper.like(LogEntity::getCreaterName, request.getUserName());
         }
         if (request.getLogType() != null) {
             queryWrapper.eq(LogEntity::getLogType, request.getLogType());
