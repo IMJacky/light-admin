@@ -13,7 +13,8 @@ public enum LogSubTypeEnum {
     User(2, "用户"),
     Role(3, "角色"),
     Dept(4, "部门"),
-    Job(5, "岗位");
+    Job(5, "岗位"),
+    Dict(6, "字典");
 
     /**
      * 状态码
