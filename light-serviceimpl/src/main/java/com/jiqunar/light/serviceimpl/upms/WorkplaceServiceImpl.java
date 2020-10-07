@@ -191,8 +191,9 @@ public class WorkplaceServiceImpl implements WorkplaceService {
                 .map(LocalDate::getDayOfMonth).forEach(m -> {
             BarResponse barResponse = new BarResponse();
             barResponse.setX(m.toString() + "日");
-            if (barResponseListExist.stream().anyMatch(n -> n.getX().equals(m.toString()))) {
-                barResponse.setY(barResponseListExist.stream().filter(n -> n.getX().equals(m.toString())).findFirst().get().getY());
+            String zeroIntString = String.format("%2d", m).replace(" ", "0");
+            if (barResponseListExist.stream().anyMatch(n -> n.getX().equals(zeroIntString))) {
+                barResponse.setY(barResponseListExist.stream().filter(n -> n.getX().equals(zeroIntString)).findFirst().get().getY());
             } else {
                 barResponse.setY(0L);
             }

@@ -102,10 +102,6 @@ public class HttpClientUtils {
         return resultString;
     }
 
-    public static String doPost(String url) {
-        return doPost(url, null);
-    }
-
     public static String doPostJson(String url, String json) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
