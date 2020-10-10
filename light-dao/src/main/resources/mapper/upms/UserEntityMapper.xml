@@ -50,7 +50,7 @@
         u.visit_date
         </sql>
     <select id="userList" resultType="com.jiqunar.light.model.response.upms.UserListResponse">
-        SELECT <include refid="UBase_Column_List"/>, GROUP_CONCAT(r.id) role_id,GROUP_CONCAT(r.description) AS role_name
+        SELECT<include refid="UBase_Column_List"/>, GROUP_CONCAT(r.id) role_id,GROUP_CONCAT(r.description) AS role_name
         FROM lu_user u
         LEFT JOIN lu_user_role ur ON
         ur.user_id=u.id AND ur.is_deleted=0
@@ -58,13 +58,13 @@
         r.id=ur.role_id AND r.is_deleted=0
         <where>
             <if test="request.id!=null and request.id>0">
-                u.id=#{request.id}
+                and u.id=#{request.id}
             </if>
             <if test="request.phone!=null and request.phone!=''">
-                u.phone=#{request.phone}
+                and u.phone=#{request.phone}
             </if>
             <if test="request.userName!=null and request.userName!=''">
-                u.user_name=#{request.userName}
+                and u.user_name=#{request.userName}
             </if>
         </where>
         GROUP BY u.id

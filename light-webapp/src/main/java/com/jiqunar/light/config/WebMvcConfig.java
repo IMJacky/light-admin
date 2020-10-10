@@ -105,6 +105,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns("/auth/login", "/test/*")
+                .excludePathPatterns("/BillEntity/*", "/VisitRecordEntity/*", "/WxUserEntity/*")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
         ;
     }
