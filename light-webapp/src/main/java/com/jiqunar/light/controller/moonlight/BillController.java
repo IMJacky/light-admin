@@ -1,20 +1,44 @@
 package com.jiqunar.light.controller.moonlight;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.fastjson.JSON;
+import com.jiqunar.light.common.DateUtils;
+import com.jiqunar.light.controller.BaseController;
+import com.jiqunar.light.model.entity.moonlight.BillEntity;
+import com.jiqunar.light.model.mq.MQConfig;
 import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditRequest;
 import com.jiqunar.light.model.request.moonlight.BillListRequest;
 import com.jiqunar.light.model.response.BaseResponse;
+import com.jiqunar.light.model.response.moonlight.AlipayBillCsvInfo;
+import com.jiqunar.light.model.response.moonlight.AlipayBillExportInfo;
+import com.jiqunar.light.model.response.moonlight.WepayBillCsvInfo;
+import com.jiqunar.light.service.moonlight.BillService;
+import com.jiqunar.light.serviceimpl.moonlight.AlipayBillExcelListener;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.jiqunar.light.model.entity.moonlight.BillEntity;
-import com.jiqunar.light.service.moonlight.BillService;
-import org.springframework.web.bind.annotation.RestController;
-import com.jiqunar.light.controller.BaseController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 账单信息 前端控制器
@@ -28,6 +52,10 @@ import java.util.List;
 public class BillController extends BaseController {
     @Autowired
     private BillService billService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private MQConfig mqConfig;
 
     /**
      * 新增账单信息
@@ -144,5 +172,101 @@ public class BillController extends BaseController {
     @ApiOperation("按日期范围查看账单信息")
     public BaseResponse getByDate(@RequestBody BillListRequest request) {
         return BaseResponse.success(billService.getByDate(request));
+    }
+
+    /**
+     * 支付宝账单导入excel
+     *
+     * @param serviceFile
+     */
+    @SneakyThrows
+    @PostMapping("/import")
+    @ApiOperation("按日期范围查看账单信息")
+    public void excelImport(@RequestParam(value = "file") MultipartFile serviceFile) {
+        ExcelReader excelReader = null;
+        InputStream in = null;
+        try {
+            in = serviceFile.getInputStream();
+            excelReader = EasyExcel.read(in, AlipayBillExportInfo.class,
+                    new AlipayBillExcelListener(billService)).build();
+            ReadSheet readSheet = EasyExcel.readSheet(0).headRowNumber(6).build();
+            excelReader.read(readSheet);
+        } catch (IOException ex) {
+        } finally {
+            in.close();
+            if (excelReader != null) {
+                excelReader.finish();
+            }
+        }
+    }
+
+    /**
+     * 支付宝账单导入csv
+     *
+     * @param serviceFile
+     */
+    @SneakyThrows
+    @PostMapping("/importCsv")
+    @ApiOperation("支付宝账单导入csv")
+    public BaseResponse importCsv(@RequestParam(value = "file") MultipartFile serviceFile, @RequestParam String openId) {
+        if (serviceFile.getOriginalFilename().indexOf(".csv") < 0) {
+            return BaseResponse.invalidParams("仅支持文件为csv格式的账单");
+        }
+        InputStream in = null;
+        try {
+            in = serviceFile.getInputStream();
+            InputStreamReader is = new InputStreamReader(in, "GBK");
+            ColumnPositionMappingStrategy<AlipayBillCsvInfo> mappingStrategy = new ColumnPositionMappingStrategy<>();
+            mappingStrategy.setType(AlipayBillCsvInfo.class);
+            CsvToBean<AlipayBillCsvInfo> build = new CsvToBeanBuilder<AlipayBillCsvInfo>(is)
+                    .withMappingStrategy(mappingStrategy).withIgnoreQuotations(true).build();
+            List<AlipayBillCsvInfo> alipayBillCsvInfoList = build.parse();
+            for (AlipayBillCsvInfo m : alipayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    !"交易创建时间".equals(m.getCreateDate().trim()) &&
+                    StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList())) {
+                m.setOpenId(openId);
+                rabbitTemplate.convertAndSend(mqConfig.getAlipayBillExchange(), mqConfig.getAlipayBillRouteKey(),
+                        JSON.toJSONString(m));
+            }
+        } catch (IOException ex) {
+        } finally {
+            in.close();
+        }
+        return BaseResponse.success(true);
+    }
+
+    /**
+     * 微信账单导入csv
+     *
+     * @param serviceFile
+     */
+    @SneakyThrows
+    @PostMapping("/importCsvWepay")
+    @ApiOperation("微信账单导入csv")
+    public BaseResponse importCsvWepay(@RequestParam(value = "file") MultipartFile serviceFile, @RequestParam String openId) {
+        if (serviceFile.getOriginalFilename().indexOf(".csv") < 0) {
+            return BaseResponse.invalidParams("仅支持文件为csv格式的账单");
+        }
+        InputStream in = null;
+        try {
+            in = serviceFile.getInputStream();
+            InputStreamReader is = new InputStreamReader(in, "UTF-8");
+            ColumnPositionMappingStrategy<WepayBillCsvInfo> mappingStrategy = new ColumnPositionMappingStrategy<>();
+            mappingStrategy.setType(WepayBillCsvInfo.class);
+            CsvToBean<WepayBillCsvInfo> build = new CsvToBeanBuilder<WepayBillCsvInfo>(is)
+                    .withMappingStrategy(mappingStrategy).withIgnoreQuotations(true).build();
+            List<WepayBillCsvInfo> wepayBillCsvInfoList = build.parse();
+            for (WepayBillCsvInfo m : wepayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    !"交易时间".equals(m.getCreateDate().trim()) &&
+                    StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList())) {
+                m.setOpenId(openId);
+                rabbitTemplate.convertAndSend(mqConfig.getWepayBillExchange(), mqConfig.getWepayBillRouteKey(),
+                        JSON.toJSONString(m));
+            }
+        } catch (IOException ex) {
+        } finally {
+            in.close();
+        }
+        return BaseResponse.success(true);
     }
 }

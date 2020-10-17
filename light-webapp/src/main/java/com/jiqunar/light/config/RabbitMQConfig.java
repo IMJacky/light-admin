@@ -18,6 +18,13 @@ public class RabbitMQConfig {
     private MQConfig mqConfig;
 
     @Bean
+    public DirectExchange defaultExchange() {
+        boolean durable = true;
+        boolean autoDelete = false;
+        return new DirectExchange(mqConfig.getDefaultExchange(), durable, autoDelete);
+    }
+
+    @Bean
     public Queue defaultQueue() {
         boolean durable = true;
         boolean exclusive = false;
@@ -26,16 +33,55 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public DirectExchange defaultExchange() {
-        boolean durable = true;
-        boolean autoDelete = false;
-        return new DirectExchange(mqConfig.getDefaultExchange(), durable, autoDelete);
-    }
-
-    @Bean
     public Binding binding() {
         return BindingBuilder.bind(defaultQueue())
                 .to(defaultExchange())
                 .with(mqConfig.getDefaultRouteKey());
+    }
+
+
+
+    @Bean
+    public Queue alipayBillQueue() {
+        boolean durable = true;
+        boolean exclusive = false;
+        boolean autoDelete = false;
+        return new Queue(mqConfig.getAlipayBillQueue(), durable, exclusive, autoDelete);
+    }
+
+    @Bean
+    public Binding alipayBillBinding() {
+        return BindingBuilder.bind(alipayBillQueue())
+                .to(alipayBillExchange())
+                .with(mqConfig.getAlipayBillRouteKey());
+    }
+
+    @Bean
+    public DirectExchange alipayBillExchange() {
+        boolean durable = true;
+        boolean autoDelete = false;
+        return new DirectExchange(mqConfig.getAlipayBillExchange(), durable, autoDelete);
+    }
+
+    @Bean
+    public Queue wepayBillQueue() {
+        boolean durable = true;
+        boolean exclusive = false;
+        boolean autoDelete = false;
+        return new Queue(mqConfig.getWepayBillQueue(), durable, exclusive, autoDelete);
+    }
+
+    @Bean
+    public Binding wepayBillBinding() {
+        return BindingBuilder.bind(wepayBillQueue())
+                .to(wepayBillExchange())
+                .with(mqConfig.getWepayBillRouteKey());
+    }
+
+    @Bean
+    public DirectExchange wepayBillExchange() {
+        boolean durable = true;
+        boolean autoDelete = false;
+        return new DirectExchange(mqConfig.getWepayBillExchange(), durable, autoDelete);
     }
 }

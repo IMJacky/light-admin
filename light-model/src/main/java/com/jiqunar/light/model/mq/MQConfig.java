@@ -27,4 +27,34 @@ public class MQConfig {
      * 默认路由key
      */
     private String  defaultRouteKey;
+
+    /**
+     * 支付宝账单交换机
+     */
+    private String  alipayBillExchange;
+
+    /**
+     * 支付宝账单队列名
+     */
+    private String  alipayBillQueue;
+
+    /**
+     * 支付宝账单路由key
+     */
+    private String  alipayBillRouteKey;
+
+    /**
+     * 微信账单交换机
+     */
+    private String  wepayBillExchange;
+
+    /**
+     * 微信账单队列名
+     */
+    private String  wepayBillQueue;
+
+    /**
+     * 微信账单路由key
+     */
+    private String  wepayBillRouteKey;
 }

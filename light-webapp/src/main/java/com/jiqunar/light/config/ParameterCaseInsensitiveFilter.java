@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2020/5/8 18:36
  */
 @Order(1)
-@WebFilter(filterName = "caseInsensitiveFilter", urlPatterns = "/*")
+@WebFilter(filterName = "caseInsensitiveFilter", urlPatterns = "/*", asyncSupported = true)
 public class ParameterCaseInsensitiveFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

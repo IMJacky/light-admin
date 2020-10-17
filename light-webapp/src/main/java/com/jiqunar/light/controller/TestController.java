@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -91,7 +92,7 @@ public class TestController {
     }
 
     /**
-     * 测试随机数
+     * mq发送消息
      *
      * @return
      */
@@ -102,5 +103,16 @@ public class TestController {
             rabbitTemplate.convertAndSend(mqConfig.getDefaultExchange(), mqConfig.getDefaultRouteKey(), count);
         }
         return BaseResponse.success(count);
+    }
+
+    /**
+     * webflux测试
+     *
+     * @return
+     */
+    @GetMapping("/webflux")
+    @ApiOperation("webflux测试")
+    public Mono<BaseResponse> webflux() {
+        return Mono.just(BaseResponse.success("hello webflux"));
     }
 }

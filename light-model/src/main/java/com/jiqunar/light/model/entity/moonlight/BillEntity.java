@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  * 账单信息
  *
  * @author auto generator
- * @since 2020-07-28
+ * @since 2020-10-14
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -38,6 +38,27 @@ public class BillEntity extends BaseEntity {
     @ApiModelProperty(value = "微信unionid")
     @TableField("union_id")
     private String unionId;
+
+    /**
+     * 交易对方（老板）
+     */
+    @ApiModelProperty(value = "交易对方（老板）")
+    @TableField("boss")
+    private String boss;
+
+    /**
+     * 商品
+     */
+    @ApiModelProperty(value = "商品")
+    @TableField("product")
+    private String product;
+
+    /**
+     * 交易单号
+     */
+    @ApiModelProperty(value = "交易单号")
+    @TableField("order_id")
+    private String orderId;
 
     /**
      * 账单日期

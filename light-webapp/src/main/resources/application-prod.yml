@@ -105,3 +105,11 @@ custom:
     defaultExchange: default_exchange # 默认交换器
     defaultQueue: default_queue # 默认队列名
     defaultRouteKey: default_route_key # 默认路由key
+
+    alipayBillExchange: alipay_bill_exchange # 支付宝账单交换器
+    alipayBillQueue: alipay_bill_queue # 支付宝账单队列名
+    alipayBillRouteKey: alipay_bill_route_key # 支付宝账单路由key
+
+    wepayBillExchange: wepay_bill_exchange # 微信账单交换器
+    wepayBillQueue: wepay_bill_queue # 微信账单队列名
+    wepayBillRouteKey: wepay_bill_route_key # 微信路由key

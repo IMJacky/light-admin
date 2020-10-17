@@ -33,8 +33,8 @@ public class CustomExceptionConfig {
      * @param e
      * @return
      */
-    @ExceptionHandler(Exception.class)
-    public BaseResponse systemException(Exception e) {
+    @ExceptionHandler(RuntimeException.class)
+    public BaseResponse systemException(RuntimeException e) {
         if (StringUtils.isBlank(e.getMessage())) {
             //未找到对应路径的报错？
             return BaseResponse.systemException("not found exception detail");
