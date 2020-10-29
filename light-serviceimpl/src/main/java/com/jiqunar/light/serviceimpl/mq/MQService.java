@@ -67,6 +67,7 @@ public class MQService {
                     .eq(BillEntity::getOrderId, m.getOrderId().trim()));
             if (billEntity == null) {
                 billEntity = new BillEntity();
+                billEntity.setCreateDate(LocalDateTime.now());
             } else {
                 billEntity.setUpdateDate(LocalDateTime.now());
             }
@@ -105,6 +106,7 @@ public class MQService {
                     .eq(BillEntity::getOrderId, m.getOrderId().trim()));
             if (billEntity == null) {
                 billEntity = new BillEntity();
+                billEntity.setCreateDate(LocalDateTime.now());
             } else {
                 billEntity.setUpdateDate(LocalDateTime.now());
             }

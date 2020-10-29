@@ -1,7 +1,9 @@
 package com.jiqunar.light.controller.moonlight;
 
+import com.jiqunar.light.model.request.BaseRequest;
 import com.jiqunar.light.model.request.BaseWxRequest;
 import com.jiqunar.light.model.request.PageRequest;
+import com.jiqunar.light.model.request.moonlight.VisitRequest;
 import com.jiqunar.light.model.request.moonlight.WxLoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
@@ -118,7 +120,9 @@ public class WxUserController extends BaseController {
 
     @PostMapping("/visitrecord")
     @ApiOperation("新增访问记录")
-    public BaseResponse addVisitRecord(@RequestBody BaseWxRequest request) {
+    public BaseResponse addVisitRecord(@RequestBody VisitRequest request) {
+        BaseRequest baseRequest = baseRequest();
+        request.setOpenId(baseRequest.getOperateName());
         return wxUserService.addVisitRecord(request);
     }
 }

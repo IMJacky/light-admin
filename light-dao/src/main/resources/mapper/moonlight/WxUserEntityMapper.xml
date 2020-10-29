@@ -18,6 +18,11 @@
                     <result column="session_key" property="sessionKey" />
                     <result column="avatar_url" property="avatarUrl" />
                     <result column="nick_name" property="nickName" />
+                    <result column="language" property="language" />
+                    <result column="country" property="country" />
+                    <result column="province" property="province" />
+                    <result column="city" property="city" />
+                    <result column="gender" property="gender" />
         </resultMap>
 
         <!-- 通用查询结果列 -->
@@ -30,7 +35,7 @@
                 updater_name,
                 update_date,
                 is_deleted,
-            open_id, union_id, last_visit_date, session_key, avatar_url, nick_name
+            open_id, union_id, last_visit_date, session_key, avatar_url, nick_name, language, country, province, city, gender
         </sql>
 
 </mapper>

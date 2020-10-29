@@ -17,14 +17,26 @@ public class WxLoginRequest {
     private String code;
 
     /**
-     * 头像地址
+     * 不包括敏感信息的原始数据字符串，用于计算签名
      */
-    @ApiModelProperty(value = "头像地址")
-    private String avatarUrl;
+    @ApiModelProperty(value = "不包括敏感信息的原始数据字符串，用于计算签名")
+    private String rawData;
 
     /**
-     * 微信昵称
+     * 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
      */
-    @ApiModelProperty(value = "微信昵称")
-    private String nickName;
+    @ApiModelProperty(value = "使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息")
+    private String signature;
+
+    /**
+     * 包括敏感数据在内的完整用户信息的加密数据
+     */
+    @ApiModelProperty(value = "包括敏感数据在内的完整用户信息的加密数据")
+    private String encryptedData;
+
+    /**
+     * 加密算法的初始向量
+     */
+    @ApiModelProperty(value = "加密算法的初始向量")
+    private String iv;
 }

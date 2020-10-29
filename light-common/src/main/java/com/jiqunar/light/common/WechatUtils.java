@@ -2,7 +2,12 @@ package com.jiqunar.light.common;
 
 import com.alibaba.fastjson.JSON;
 import com.jiqunar.light.model.response.moonlight.CodeSessionResponse;
+import com.jiqunar.light.model.response.moonlight.WechatUserDecrypt;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,4 +34,32 @@ public class WechatUtils {
         //发送post请求读取调用微信接口获取openid用户唯一标识
         return JSON.parseObject(result, CodeSessionResponse.class);
     }
+
+    /**
+     * 根据encryptedData，iv，sessionKey解密获取用户信息
+     *
+     * @param encryptedData
+     * @param iv
+     * @param sessionKey
+     * @return
+     */
+    public static WechatUserDecrypt decryptData(String encryptedData, String iv, String sessionKey) {
+        try {
+            byte[] aesKey = Base64.decode(sessionKey);
+            byte[] aesIV = Base64.decode(iv);
+            byte[] aesEncryptedData = Base64.decode(encryptedData);
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(aesKey, "AES"), new IvParameterSpec(aesIV));
+            byte[] original = cipher.doFinal(aesEncryptedData);
+            if (null != original && original.length > 0) {
+                String result = new String(original, "UTF-8");
+                return JSON.parseObject(result, WechatUserDecrypt.class);
+            }
+            return null;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
 }

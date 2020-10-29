@@ -8,6 +8,7 @@ import com.jiqunar.light.common.DateUtils;
 import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.jiqunar.light.model.mq.MQConfig;
+import com.jiqunar.light.model.request.BaseRequest;
 import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditRequest;
@@ -171,6 +172,7 @@ public class BillController extends BaseController {
     @PostMapping("/getbydate")
     @ApiOperation("按日期范围查看账单信息")
     public BaseResponse getByDate(@RequestBody BillListRequest request) {
+        request.setOpenId(baseRequest().getOperateName());
         return BaseResponse.success(billService.getByDate(request));
     }
 
@@ -208,7 +210,7 @@ public class BillController extends BaseController {
     @SneakyThrows
     @PostMapping("/importCsv")
     @ApiOperation("支付宝账单导入csv")
-    public BaseResponse importCsv(@RequestParam(value = "file") MultipartFile serviceFile, @RequestParam String openId) {
+    public BaseResponse importCsv(@RequestParam(value = "file") MultipartFile serviceFile) {
         if (serviceFile.getOriginalFilename().indexOf(".csv") < 0) {
             return BaseResponse.invalidParams("仅支持文件为csv格式的账单");
         }
@@ -221,10 +223,14 @@ public class BillController extends BaseController {
             CsvToBean<AlipayBillCsvInfo> build = new CsvToBeanBuilder<AlipayBillCsvInfo>(is)
                     .withMappingStrategy(mappingStrategy).withIgnoreQuotations(true).build();
             List<AlipayBillCsvInfo> alipayBillCsvInfoList = build.parse();
-            for (AlipayBillCsvInfo m : alipayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
-                    !"交易创建时间".equals(m.getCreateDate().trim()) &&
-                    StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList())) {
-                m.setOpenId(openId);
+            if (alipayBillCsvInfoList.stream().noneMatch(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    "交易创建时间".equals(m.getCreateDate().trim()) && StringUtils.isNotBlank(m.getIncomeExpend()))) {
+                return BaseResponse.fail("请选择正确的支付宝账单");
+            }
+            alipayBillCsvInfoList = alipayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    !"交易创建时间".equals(m.getCreateDate().trim()) && StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList());
+            for (AlipayBillCsvInfo m : alipayBillCsvInfoList) {
+                m.setOpenId(baseRequest().getOperateName());
                 rabbitTemplate.convertAndSend(mqConfig.getAlipayBillExchange(), mqConfig.getAlipayBillRouteKey(),
                         JSON.toJSONString(m));
             }
@@ -243,7 +249,7 @@ public class BillController extends BaseController {
     @SneakyThrows
     @PostMapping("/importCsvWepay")
     @ApiOperation("微信账单导入csv")
-    public BaseResponse importCsvWepay(@RequestParam(value = "file") MultipartFile serviceFile, @RequestParam String openId) {
+    public BaseResponse importCsvWepay(@RequestParam(value = "file") MultipartFile serviceFile) {
         if (serviceFile.getOriginalFilename().indexOf(".csv") < 0) {
             return BaseResponse.invalidParams("仅支持文件为csv格式的账单");
         }
@@ -256,10 +262,14 @@ public class BillController extends BaseController {
             CsvToBean<WepayBillCsvInfo> build = new CsvToBeanBuilder<WepayBillCsvInfo>(is)
                     .withMappingStrategy(mappingStrategy).withIgnoreQuotations(true).build();
             List<WepayBillCsvInfo> wepayBillCsvInfoList = build.parse();
-            for (WepayBillCsvInfo m : wepayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
-                    !"交易时间".equals(m.getCreateDate().trim()) &&
-                    StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList())) {
-                m.setOpenId(openId);
+            if (wepayBillCsvInfoList.stream().noneMatch(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    "交易时间".equals(m.getCreateDate().trim()) && StringUtils.isNotBlank(m.getIncomeExpend()))) {
+                return BaseResponse.fail("请选择正确的微信账单");
+            }
+            wepayBillCsvInfoList = wepayBillCsvInfoList.stream().filter(m -> StringUtils.isNotBlank(m.getCreateDate()) &&
+                    !"交易时间".equals(m.getCreateDate().trim()) && StringUtils.isNotBlank(m.getIncomeExpend())).collect(Collectors.toList());
+            for (WepayBillCsvInfo m : wepayBillCsvInfoList) {
+                m.setOpenId(baseRequest().getOperateName());
                 rabbitTemplate.convertAndSend(mqConfig.getWepayBillExchange(), mqConfig.getWepayBillRouteKey(),
                         JSON.toJSONString(m));
             }

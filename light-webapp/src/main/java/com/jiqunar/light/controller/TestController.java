@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -113,6 +114,28 @@ public class TestController {
     @GetMapping("/webflux")
     @ApiOperation("webflux测试")
     public Mono<BaseResponse> webflux() {
-        return Mono.just(BaseResponse.success("hello webflux"));
+        return Mono.just(BaseResponse.success("webflux测试"));
+    }
+
+    /**
+     * webflux1测试
+     *
+     * @return
+     */
+    @GetMapping("/webflux1")
+    @ApiOperation("webflux1测试")
+    public Flux<BaseResponse> webflux1() {
+        return Flux.just(BaseResponse.success("webflux1测试"), BaseResponse.success("webflux1测试"));
+    }
+
+    /**
+     * webflux2测试
+     *
+     * @return
+     */
+    @GetMapping("/webflux2")
+    @ApiOperation("webflux2测试")
+    public Flux<BaseResponse> webflux2() {
+        return Flux.error(new IllegalStateException("webflux2测试"));
     }
 }

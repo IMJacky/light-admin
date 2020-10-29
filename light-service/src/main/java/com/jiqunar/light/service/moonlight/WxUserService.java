@@ -4,7 +4,7 @@ import com.jiqunar.light.model.entity.moonlight.WxUserEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.BaseWxRequest;
 import com.jiqunar.light.model.request.PageRequest;
-import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
+import com.jiqunar.light.model.request.moonlight.VisitRequest;
 import com.jiqunar.light.model.request.moonlight.WxLoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.PageResponse;
@@ -36,5 +36,5 @@ public interface WxUserService extends IService<WxUserEntity> {
      * @param request
      * @return
      */
-    BaseResponse addVisitRecord(BaseWxRequest request);
+    BaseResponse addVisitRecord(VisitRequest request);
 }
