@@ -28,10 +28,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneOffset;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,20 +65,43 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     @Override
     public BillListResponse getByDate(BillListRequest request) {
         BillListResponse response = new BillListResponse();
+        if (request.getStartDate() == null) {
+            request.setStartDate(LocalDate.now().plusDays(-7));
+        }
+        if (request.getEndDate() == null) {
+            request.setEndDate(LocalDate.now());
+        }
+        response.setMinDate(LocalDate.of(LocalDate.now().getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setMaxDate(LocalDate.now().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setStartDate(request.getStartDate());
+        response.setEndDate(request.getEndDate());
+        response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
+                request.getEndDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli()));
         List<BillAggregation> billAggregationList = new ArrayList<>();
         QueryWrapper queryWrapper = new QueryWrapper<BillEntity>()
+                .gt("bill_date", request.getStartDate())
+                .lt("bill_date", request.getEndDate().plusDays(1))
                 .eq("open_id", request.getOpenId());
-        queryWrapper.orderByDesc("bill_date");
-        if (request.getStartDate() != null) {
-            queryWrapper.gt("bill_date", request.getStartDate());
-        }
-        if (request.getEndDate() != null) {
-            queryWrapper.lt("bill_date", request.getEndDate().plusDays(1));
+        if (request.getBillType() >= 0) {
+            queryWrapper.eq("bill_type", request.getBillType());
         }
         List<BillEntity> billEntityList = list(queryWrapper);
+        response.setEarningAmount(billEntityList.stream().filter(e -> e.getBillType() == 1)
+                .map(e -> e.getAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        response.setExpenseAmount(billEntityList.stream().filter(e -> e.getBillType() == 0)
+                .map(e -> e.getAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
         Map<LocalDate, List<BillEntity>> billGroup = billEntityList.stream().collect(Collectors.groupingBy(m ->
                 m.getBillDate().toLocalDate()));
-        billGroup.entrySet().forEach(m -> {
+        Map<LocalDate, List<BillEntity>> billGroupSort = new LinkedHashMap<>();
+        if (request.getSort() == 1) {
+            billGroup.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey()).forEachOrdered(e -> billGroupSort.put(e.getKey(), e.getValue()));
+        } else {
+            billGroup.entrySet().stream()
+                    .sorted(Map.Entry.<LocalDate, List<BillEntity>>comparingByKey()
+                            .reversed()).forEachOrdered(e -> billGroupSort.put(e.getKey(), e.getValue()));
+        }
+        billGroupSort.entrySet().forEach(m -> {
             BillAggregation billAggregation = new BillAggregation();
             billAggregation.setBillDate(m.getKey());
             billAggregation.setBillWeek(DateUtils.getDayOfTheWeek(m.getKey()));
@@ -89,7 +110,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
             billAggregation.setExpenseAmount(m.getValue().stream().filter(e -> e.getBillType() == 0)
                     .map(e -> e.getAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
             billAggregation.setBillDetailList(m.getValue().stream().map(e -> BillDetail.builder()
-                    .amount(e.getAmount()).billTime(DateUtils.getTime(e.getBillDate()))
+                    .amount(e.getAmount()).billTime(DateUtils.getTime(e.getBillDate())).boss(e.getBoss())
                     .tag(e.getTag()).subTag(e.getSubTag()).id(e.getId()).billType(e.getBillType()).build())
                     .collect(Collectors.toList()));
             billAggregationList.add(billAggregation);

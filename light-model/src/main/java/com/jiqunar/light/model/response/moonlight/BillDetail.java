@@ -48,4 +48,10 @@ public class BillDetail {
      */
     @ApiModelProperty(value = "金额")
     private BigDecimal amount;
+
+    /**
+     * 交易方
+     */
+    @ApiModelProperty(value = "交易方")
+    private String boss;
 }

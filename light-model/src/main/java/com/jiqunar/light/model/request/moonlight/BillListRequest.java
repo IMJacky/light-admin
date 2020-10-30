@@ -25,4 +25,17 @@ public class BillListRequest extends BaseWxRequest {
      */
     @ApiModelProperty(value = "结束日期（格式：yyyy-MM-dd）")
     private LocalDate endDate;
+
+
+    /**
+     * 账单类型（0支出，1收入）
+     */
+    @ApiModelProperty(value = "账单类型（0支出，1收入）")
+    private Integer billType;
+
+    /**
+     * 按照时间排序 0：倒序，1：正序
+     */
+    @ApiModelProperty(value = "按照时间排序 0：倒序，1：正序")
+    private Integer sort;
 }
