@@ -65,14 +65,22 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     @Override
     public BillListResponse getByDate(BillListRequest request) {
         BillListResponse response = new BillListResponse();
-        if (request.getStartDate() == null) {
-            request.setStartDate(LocalDate.now().plusDays(-7));
+        LocalDate now = LocalDate.now();
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
+                    .eq("open_id", request.getOpenId())
+                    .orderByDesc("bill_date"), false
+            );
+            if (billEntityLast != null) {
+                request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-7));
+                request.setEndDate(billEntityLast.getBillDate().toLocalDate());
+            } else {
+                request.setStartDate(now.plusDays(-7));
+                request.setEndDate(now);
+            }
         }
-        if (request.getEndDate() == null) {
-            request.setEndDate(LocalDate.now());
-        }
-        response.setMinDate(LocalDate.of(LocalDate.now().getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
-        response.setMaxDate(LocalDate.now().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setMinDate(LocalDate.of(now.getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setMaxDate(now.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
         response.setStartDate(request.getStartDate());
         response.setEndDate(request.getEndDate());
         response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
