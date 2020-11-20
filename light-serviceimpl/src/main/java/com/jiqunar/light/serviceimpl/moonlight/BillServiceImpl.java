@@ -10,11 +10,9 @@ import com.jiqunar.light.model.entity.moonlight.WxUserEntity;
 import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditRequest;
 import com.jiqunar.light.model.request.moonlight.BillListRequest;
+import com.jiqunar.light.model.request.moonlight.BillStatisticsRequest;
 import com.jiqunar.light.model.response.BaseResponse;
-import com.jiqunar.light.model.response.moonlight.BillAggregation;
-import com.jiqunar.light.model.response.moonlight.BillDetail;
-import com.jiqunar.light.model.response.moonlight.BillEditResponse;
-import com.jiqunar.light.model.response.moonlight.BillListResponse;
+import com.jiqunar.light.model.response.moonlight.*;
 import com.jiqunar.light.service.moonlight.BillService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +40,8 @@ import java.util.stream.Collectors;
 public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> implements BillService {
     @Autowired
     private WxUserMapper wxUserMapper;
+    @Autowired
+    private BillMapper billMapper;
 
     /**
      * 分页获取账单信息
@@ -195,5 +195,28 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
             billEntity.setCreateDate(LocalDateTime.now());
             return BaseResponse.success(save(billEntity));
         }
+    }
+
+    /**
+     * 账单统计信息
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public BillStatisticsResponse billStatistics(BillStatisticsRequest request) {
+        BillStatisticsResponse response = new BillStatisticsResponse();
+        request.setStatisticsTypeFormat("%Y-%m-%d");
+        request.setEndDate(request.getEndDate().plusDays(1));
+        if (request.getStatisticsType().equals(1)) {
+            request.setStartDate(LocalDate.of(request.getStartDate().getYear(), 1, 1));
+            request.setEndDate(LocalDate.of(request.getStartDate().getYear() + 1, 1, 1));
+            request.setStatisticsTypeFormat("%Y-%m");
+        }
+        List<StatisticsDetail> statisticsDetailList = billMapper.billStatistics(request);
+        response.setStatisticsDetailList(statisticsDetailList);
+        response.setEarningAmount(statisticsDetailList.stream().map(e -> e.getEarningAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        response.setExpenseAmount(statisticsDetailList.stream().map(e -> e.getExpenseAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        return response;
     }
 }

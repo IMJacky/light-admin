@@ -15,6 +15,10 @@ public class DateUtils {
         return dateTime.format(DateTimeFormatter.ofPattern(DateFormat.DEFAULT_TIME_FORMAT));
     }
 
+    public static String getDateTime(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern(DateFormat.DEFAULT_DATE_TIME_FORMAT));
+    }
+
     public static LocalDateTime getDateTime(String dateTime) {
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(DateFormat.DEFAULT_DATE_TIME_FORMAT));
     }

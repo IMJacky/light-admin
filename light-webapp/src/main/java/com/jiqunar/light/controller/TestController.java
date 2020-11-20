@@ -1,10 +1,12 @@
 package com.jiqunar.light.controller;
 
+import com.jiqunar.light.common.DateUtils;
 import com.jiqunar.light.common.RedistUtils;
 import com.jiqunar.light.model.mq.MQConfig;
 import com.jiqunar.light.model.response.BaseResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +53,18 @@ public class TestController {
     @GetMapping("/testRandom")
     @ApiOperation("测试随机数")
     public BaseResponse testRandom() {
-        return BaseResponse.success(RandomUtils.nextDouble(0, 1));
+        Integer[] source = {12, 5, 6, 78, 44, 99};
+        for (int i = 0; i < source.length; i++) {
+            for (int j = i; j < source.length; j++) {
+                if (source[i] > source[j]) {
+                    int temp = source[i];
+                    source[i] = source[j];
+                    source[j] = temp;
+                }
+            }
+        }
+        Double randomDouble = RandomUtils.nextDouble(0, 1);
+        return BaseResponse.success(source);
     }
 
     /**
@@ -114,7 +127,7 @@ public class TestController {
     @GetMapping("/webflux")
     @ApiOperation("webflux测试")
     public Mono<BaseResponse> webflux() {
-        return Mono.just(BaseResponse.success("webflux测试"));
+        return Mono.just(BaseResponse.success("webflux测试：Mono.just"));
     }
 
     /**
@@ -125,7 +138,7 @@ public class TestController {
     @GetMapping("/webflux1")
     @ApiOperation("webflux1测试")
     public Flux<BaseResponse> webflux1() {
-        return Flux.just(BaseResponse.success("webflux1测试"), BaseResponse.success("webflux1测试"));
+        return Flux.just(BaseResponse.success("webflux1测试"), BaseResponse.success("webflux1测试：Flux.just"));
     }
 
     /**
@@ -136,6 +149,45 @@ public class TestController {
     @GetMapping("/webflux2")
     @ApiOperation("webflux2测试")
     public Flux<BaseResponse> webflux2() {
-        return Flux.error(new IllegalStateException("webflux2测试"));
+        return Flux.error(new IllegalStateException("webflux2测试：Flux.error"));
+    }
+
+    /**
+     * webflux3测试
+     *
+     * @return
+     */
+    @SneakyThrows
+    @GetMapping("/webflux3")
+    @ApiOperation("webflux3测试")
+    public Mono<BaseResponse> webflux3() {
+        System.out.println(Thread.currentThread().getName() + DateUtils.getDateTime(LocalDateTime.now()));
+        BaseResponse result = sleep();
+        System.out.println(Thread.currentThread().getName() + DateUtils.getDateTime(LocalDateTime.now()));
+        return Mono.just(result);
+    }
+
+    /**
+     * webflux4测试
+     *
+     * @return
+     */
+    @SneakyThrows
+    @GetMapping("/webflux4")
+    @ApiOperation("webflux4测试")
+    public Mono<BaseResponse> webflux4() {
+        System.out.println(Thread.currentThread().getName() + DateUtils.getDateTime(LocalDateTime.now()));
+        Mono<BaseResponse> result = Mono.fromSupplier(() -> sleep());
+        System.out.println(Thread.currentThread().getName() + DateUtils.getDateTime(LocalDateTime.now()));
+        return result;
+    }
+
+    private BaseResponse sleep() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            return BaseResponse.systemException(e.getMessage());
+        }
+        return BaseResponse.success(Thread.currentThread().getName());
     }
 }

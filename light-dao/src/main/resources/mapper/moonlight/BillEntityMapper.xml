@@ -37,5 +37,16 @@
                 is_deleted,
             open_id, union_id, boss, product,order_id, bill_date, bill_type, amount, tag, sub_tag, description
         </sql>
+    <select id="billStatistics"
+            resultType="com.jiqunar.light.model.response.moonlight.StatisticsDetail">
+            SELECT SUM(IF(bill_type=0,amount,0)) AS expenseAmount,
+            SUM(IF(bill_type=1,amount,0)) AS earningAmount,
+            DATE_FORMAT(bill_date,#{statisticsTypeFormat}) AS 'desc'
+            FROM bill
+            where bill_date &gt; #{startDate} and bill_date &lt; #{endDate}
+            and open_id=#{openId}
+            GROUP BY DATE_FORMAT(bill_date,#{statisticsTypeFormat})
+            ORDER BY bill_date
+    </select>
 
 </mapper>

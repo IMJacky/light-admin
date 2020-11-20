@@ -13,9 +13,11 @@ import com.jiqunar.light.model.request.PageRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
 import com.jiqunar.light.model.request.moonlight.BillEditRequest;
 import com.jiqunar.light.model.request.moonlight.BillListRequest;
+import com.jiqunar.light.model.request.moonlight.BillStatisticsRequest;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.moonlight.AlipayBillCsvInfo;
 import com.jiqunar.light.model.response.moonlight.AlipayBillExportInfo;
+import com.jiqunar.light.model.response.moonlight.BillStatisticsResponse;
 import com.jiqunar.light.model.response.moonlight.WepayBillCsvInfo;
 import com.jiqunar.light.service.moonlight.BillService;
 import com.jiqunar.light.serviceimpl.moonlight.AlipayBillExcelListener;
@@ -278,5 +280,18 @@ public class BillController extends BaseController {
             in.close();
         }
         return BaseResponse.success(true);
+    }
+
+    /**
+     * 账单统计信息
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/billStatistics")
+    @ApiOperation("账单统计信息")
+    public BaseResponse billStatistics(@RequestBody BillStatisticsRequest request) {
+        request.setOpenId(baseRequest().getOperateName());
+        return BaseResponse.success(billService.billStatistics(request));
     }
 }
