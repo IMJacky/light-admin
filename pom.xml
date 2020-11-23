@@ -204,5 +204,11 @@
                 <env>prod</env>
             </properties>
         </profile>
+        <profile>
+            <id>stage</id>
+            <properties>
+                <env>stage</env>
+            </properties>
+        </profile>
     </profiles>
 </project>
