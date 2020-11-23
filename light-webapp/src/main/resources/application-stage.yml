@@ -1,0 +1,115 @@
+server:
+  port: 10003
+#  servlet:
+#    context-path: /api
+spring:
+  application:
+    name: light
+  redis:
+    host: 10.23.214.202
+    port: 6379
+    password: Wjg50058
+    # 连接超时时间（记得添加单位，Duration）
+    timeout: 3000ms
+    # Redis默认情况下有16个分片，这里配置具体使用的分片
+    # database: 0
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-wait: -1ms
+        # 连接池中的最大空闲连接 默认 8
+        max-idle: 8
+        # 连接池中的最小空闲连接 默认 0
+        min-idle: 0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    lightlog:
+      url: jdbc:mysql://10.23.214.202:3306/light_log?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: Wjg50058
+    lightupms:
+      url: jdbc:mysql://10.23.214.202:3306/light_upms?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: Wjg50058
+    moonlight:
+      url: jdbc:mysql://10.23.214.202:3306/moonlight?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: Wjg50058
+    druid:
+      # 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 5000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 监控过滤器
+      web-stat-filter:
+        enabled: true
+        exclusions:
+          - "*.js"
+          - "*.gif"
+          - "*.jpg"
+          - "*.png"
+          - "*.css"
+          - "*.ico"
+          - "/druid/*"
+      # 配置DruidStatViewServlet
+      stat-view-servlet:
+        enabled: true
+        url-pattern: "/druid/*"
+        #  禁用HTML页面上的“Reset All”功能
+        reset-enable: false
+        # 登录名
+        login-username: admin
+        # 登录密码
+        login-password: admin
+        allow:
+        deny:
+      filter:
+        stat:
+          enabled: true
+          db-type: mysql
+          log-slow-sql: true
+          slow-sql-millis: 2000
+      filters: stat,wall
+  rabbitmq:
+    host: 10.23.214.202
+    port: 5672
+    username: guest
+    password: Wjg50058
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动应答
+        concurrency: 5 # 消费端最小并发数
+        max-concurrency: 10 # 消费端最大并发数
+        prefetch: 5 # 一次请求中预处理的消息数量
+      cache:
+        channel:
+          size: 50 # 缓存的channel数量
+#自定义的一些配置
+custom:
+  #默认本地开发环境不需要token验证，默认id=1，username=admin
+  auth:
+    open: true
+    userid: 1
+    username: admin
+  mq:
+    defaultExchange: default_exchange # 默认交换器
+    defaultQueue: default_queue # 默认队列名
+    defaultRouteKey: default_route_key # 默认路由key
+
+    alipayBillExchange: alipay_bill_exchange # 支付宝账单交换器
+    alipayBillQueue: alipay_bill_queue # 支付宝账单队列名
+    alipayBillRouteKey: alipay_bill_route_key # 支付宝账单路由key
+
+    wepayBillExchange: wepay_bill_exchange # 微信账单交换器
+    wepayBillQueue: wepay_bill_queue # 微信账单队列名
+    wepayBillRouteKey: wepay_bill_route_key # 微信路由key
