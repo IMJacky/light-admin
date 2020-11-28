@@ -6,7 +6,7 @@ spring:
   application:
     name: light
   redis:
-    host: 118.25.11.180
+    host: 113.31.106.221
     port: 6379
     password: Wjg50058
     # 连接超时时间（记得添加单位，Duration）
@@ -80,7 +80,7 @@ spring:
           slow-sql-millis: 2000
       filters: stat,wall
   rabbitmq:
-    host: 118.25.11.180
+    host: 113.31.106.221
     port: 5672
     username: guest
     password: Wjg50058
