@@ -23,6 +23,10 @@ public class DateUtils {
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(DateFormat.DEFAULT_DATE_TIME_FORMAT));
     }
 
+    public static LocalDate getDate(String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern(DateFormat.DEFAULT_DATE_FORMAT));
+    }
+
     /**
      * 获取星期几
      *

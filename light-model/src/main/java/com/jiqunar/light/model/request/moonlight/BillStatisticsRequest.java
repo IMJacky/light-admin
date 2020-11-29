@@ -28,6 +28,12 @@ public class BillStatisticsRequest extends BaseWxRequest {
     private LocalDate endDate;
 
     /**
+     * 年份 按月统计
+     */
+    @ApiModelProperty(value = "年份 按月统计")
+    private Integer year;
+
+    /**
      * 统计类型 0：按日统计，1：按月统计
      */
     @ApiModelProperty(value = "统计类型 0：按日统计，1：按月统计")

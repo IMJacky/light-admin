@@ -206,33 +206,60 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     @Override
     public BillStatisticsResponse billStatistics(BillStatisticsRequest request) {
         BillStatisticsResponse response = new BillStatisticsResponse();
-        request.setStatisticsTypeFormat("%Y-%m-%d");
         LocalDate now = LocalDate.now();
-        if (request.getStartDate() == null || request.getEndDate() == null) {
-            BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
-                    .eq("open_id", request.getOpenId())
-                    .orderByDesc("bill_date"), false
-            );
-            if (billEntityLast != null) {
-                request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-7));
-                request.setEndDate(billEntityLast.getBillDate().toLocalDate());
-            } else {
-                request.setStartDate(now.plusDays(-7));
-                request.setEndDate(now);
+        if (request.getStatisticsType().equals(0)) {
+            if (request.getStartDate() == null || request.getEndDate() == null) {
+                BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
+                        .eq("open_id", request.getOpenId())
+                        .orderByDesc("bill_date"), false
+                );
+                if (billEntityLast != null) {
+                    request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-7));
+                    request.setEndDate(billEntityLast.getBillDate().toLocalDate());
+                } else {
+                    request.setStartDate(now.plusDays(-7));
+                    request.setEndDate(now);
+                }
             }
-        }
-        response.setMinDate(LocalDate.of(now.getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
-        response.setMaxDate(now.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
-        response.setStartDate(request.getStartDate());
-        response.setEndDate(request.getEndDate());
-        response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
-                request.getEndDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli()));
-        if (request.getStatisticsType().equals(1)) {
-            request.setStartDate(LocalDate.of(request.getStartDate().getYear(), 1, 1));
-            request.setEndDate(LocalDate.of(request.getStartDate().getYear() + 1, 1, 1));
+            request.setStatisticsTypeFormat("%Y-%m-%d");
+
+            response.setMinDate(LocalDate.of(now.getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+            response.setMaxDate(now.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+            response.setStartDate(request.getStartDate());
+            response.setEndDate(request.getEndDate());
+            response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
+                    request.getEndDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli()));
+        } else {
+            if (request.getYear() == null) {
+                BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
+                        .eq("open_id", request.getOpenId())
+                        .orderByDesc("bill_date"), false
+                );
+                if (billEntityLast != null) {
+                    request.setYear(billEntityLast.getBillDate().getYear());
+                } else {
+                    request.setYear(now.getYear());
+                }
+            }
+            request.setStartDate(LocalDate.of(request.getYear(), 1, 1));
+            request.setEndDate(LocalDate.of(request.getYear() + 1, 1, 1));
             request.setStatisticsTypeFormat("%Y-%m");
+
+            response.setYear(request.getYear());
         }
+
         List<StatisticsDetail> statisticsDetailList = billMapper.billStatistics(request);
+        statisticsDetailList.forEach(m -> {
+            if (request.getStatisticsType().equals(0)) {
+                LocalDate localDateDesc = DateUtils.getDate(m.getDesc());
+                if (localDateDesc.getDayOfMonth() != 1) {
+                    m.setDesc(String.valueOf(localDateDesc.getDayOfMonth()));
+                }
+            } else {
+                m.setDesc(Integer.valueOf(m.getDesc().split("-")[1]) + "月");
+            }
+        });
+
         response.setStatisticsDetailList(statisticsDetailList);
         response.setEarningAmount(statisticsDetailList.stream().map(e -> e.getEarningAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
         response.setExpenseAmount(statisticsDetailList.stream().map(e -> e.getExpenseAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));

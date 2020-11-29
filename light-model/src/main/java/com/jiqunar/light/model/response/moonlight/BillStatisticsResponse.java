@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @ApiModel(value = "账单统计响应实体", description = "账单统计响应实体")
 public class BillStatisticsResponse {
-
     /**
      * 日历最小日期
      */
@@ -43,6 +42,11 @@ public class BillStatisticsResponse {
     @ApiModelProperty(value = "结束日期（格式：yyyy-MM-dd）")
     private LocalDate endDate;
 
+    /**
+     * 年份
+     */
+    @ApiModelProperty(value = "年份")
+    private Integer year;
 
     /**
      * 收入总金额
