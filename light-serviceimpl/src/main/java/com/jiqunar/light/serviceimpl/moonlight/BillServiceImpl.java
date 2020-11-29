@@ -207,7 +207,26 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     public BillStatisticsResponse billStatistics(BillStatisticsRequest request) {
         BillStatisticsResponse response = new BillStatisticsResponse();
         request.setStatisticsTypeFormat("%Y-%m-%d");
-        request.setEndDate(request.getEndDate().plusDays(1));
+        LocalDate now = LocalDate.now();
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
+                    .eq("open_id", request.getOpenId())
+                    .orderByDesc("bill_date"), false
+            );
+            if (billEntityLast != null) {
+                request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-7));
+                request.setEndDate(billEntityLast.getBillDate().toLocalDate());
+            } else {
+                request.setStartDate(now.plusDays(-7));
+                request.setEndDate(now);
+            }
+        }
+        response.setMinDate(LocalDate.of(now.getYear() - 1, 1, 1).atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setMaxDate(now.atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli());
+        response.setStartDate(request.getStartDate());
+        response.setEndDate(request.getEndDate());
+        response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
+                request.getEndDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli()));
         if (request.getStatisticsType().equals(1)) {
             request.setStartDate(LocalDate.of(request.getStartDate().getYear(), 1, 1));
             request.setEndDate(LocalDate.of(request.getStartDate().getYear() + 1, 1, 1));

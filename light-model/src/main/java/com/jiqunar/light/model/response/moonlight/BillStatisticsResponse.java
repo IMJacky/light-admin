@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,6 +16,33 @@ import java.util.List;
 @Data
 @ApiModel(value = "账单统计响应实体", description = "账单统计响应实体")
 public class BillStatisticsResponse {
+
+    /**
+     * 日历最小日期
+     */
+    @ApiModelProperty(value = "日历最小日期")
+    private Long minDate;
+    /**
+     * 日历最大日期
+     */
+    @ApiModelProperty(value = "日历最大日期")
+    private Long maxDate;
+    /**
+     * 日历选择的日期区间
+     */
+    @ApiModelProperty(value = "日历选择的日期区间")
+    private List<Long> defaultRangeList;
+    /**
+     * 开始日期（格式：yyyy-MM-dd）
+     */
+    @ApiModelProperty(value = "开始日期（格式：yyyy-MM-dd）")
+    private LocalDate startDate;
+    /**
+     * 结束日期（格式：yyyy-MM-dd）
+     */
+    @ApiModelProperty(value = "结束日期（格式：yyyy-MM-dd）")
+    private LocalDate endDate;
+
 
     /**
      * 收入总金额
