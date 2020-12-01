@@ -207,6 +207,7 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     public BillStatisticsResponse billStatistics(BillStatisticsRequest request) {
         BillStatisticsResponse response = new BillStatisticsResponse();
         LocalDate now = LocalDate.now();
+        List<StatisticsDetail> statisticsDetailList = new ArrayList<>();
         if (request.getStatisticsType().equals(0)) {
             if (request.getStartDate() == null || request.getEndDate() == null) {
                 BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
@@ -214,10 +215,10 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
                         .orderByDesc("bill_date"), false
                 );
                 if (billEntityLast != null) {
-                    request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-7));
+                    request.setStartDate(billEntityLast.getBillDate().toLocalDate().plusDays(-30));
                     request.setEndDate(billEntityLast.getBillDate().toLocalDate());
                 } else {
-                    request.setStartDate(now.plusDays(-7));
+                    request.setStartDate(now.plusDays(-30));
                     request.setEndDate(now);
                 }
             }
@@ -229,6 +230,12 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
             response.setEndDate(request.getEndDate());
             response.setDefaultRangeList(Arrays.asList(request.getStartDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli(),
                     request.getEndDate().atStartOfDay(ZoneOffset.ofHours(8)).toInstant().toEpochMilli()));
+
+            LocalDate startDate = request.getStartDate();
+            while (startDate.compareTo(request.getEndDate()) <= 0) {
+                statisticsDetailList.add(new StatisticsDetail(BigDecimal.ZERO, BigDecimal.ZERO, DateUtils.getDate(startDate)));
+                startDate = startDate.plusDays(1);
+            }
         } else {
             if (request.getYear() == null) {
                 BillEntity billEntityLast = getOne(new QueryWrapper<BillEntity>()
@@ -244,12 +251,22 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
             request.setStartDate(LocalDate.of(request.getYear(), 1, 1));
             request.setEndDate(LocalDate.of(request.getYear() + 1, 1, 1));
             request.setStatisticsTypeFormat("%Y-%m");
-
             response.setYear(request.getYear());
+
+            Integer startMonth = 1;
+            while (startMonth.compareTo(12) <= 0) {
+                statisticsDetailList.add(new StatisticsDetail(BigDecimal.ZERO, BigDecimal.ZERO, request.getYear() + "-" + String.format("%2d", startMonth).replace(" ", "0")));
+                startMonth++;
+            }
         }
 
-        List<StatisticsDetail> statisticsDetailList = billMapper.billStatistics(request);
+        List<StatisticsDetail> statisticsDetailListDB = billMapper.billStatistics(request);
         statisticsDetailList.forEach(m -> {
+            Optional<StatisticsDetail> statisticsDetail = statisticsDetailListDB.stream().filter(n -> m.getDesc().equals(n.getDesc())).findFirst();
+            if (statisticsDetail.isPresent()) {
+                m.setEarningAmount(statisticsDetail.get().getEarningAmount());
+                m.setExpenseAmount(statisticsDetail.get().getExpenseAmount());
+            }
             if (request.getStatisticsType().equals(0)) {
 //                LocalDate localDateDesc = DateUtils.getDate(m.getDesc());
 //                if (localDateDesc.getDayOfMonth() != 1) {

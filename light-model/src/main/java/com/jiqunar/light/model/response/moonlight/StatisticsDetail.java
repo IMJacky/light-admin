@@ -1,7 +1,9 @@
 package com.jiqunar.light.model.response.moonlight;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
  * @date 2020/11/5 16:14
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class StatisticsDetail {
     /**
      * 收入总金额
