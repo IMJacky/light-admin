@@ -251,10 +251,10 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
         List<StatisticsDetail> statisticsDetailList = billMapper.billStatistics(request);
         statisticsDetailList.forEach(m -> {
             if (request.getStatisticsType().equals(0)) {
-                LocalDate localDateDesc = DateUtils.getDate(m.getDesc());
-                if (localDateDesc.getDayOfMonth() != 1) {
-                    m.setDesc(String.valueOf(localDateDesc.getDayOfMonth()));
-                }
+//                LocalDate localDateDesc = DateUtils.getDate(m.getDesc());
+//                if (localDateDesc.getDayOfMonth() != 1) {
+//                    m.setDesc(String.valueOf(localDateDesc.getDayOfMonth()));
+//                }
             } else {
                 m.setDesc(Integer.valueOf(m.getDesc().split("-")[1]) + "月");
             }
