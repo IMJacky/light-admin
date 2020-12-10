@@ -3,9 +3,12 @@ package com.jiqunar.light.dao.moonlight;
 import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jiqunar.light.model.request.moonlight.BillStatisticsRequest;
+import com.jiqunar.light.model.request.moonlight.BillYearRequest;
 import com.jiqunar.light.model.response.moonlight.StatisticsDetail;
+import com.jiqunar.light.model.response.moonlight.YearBillResponse;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,4 +26,12 @@ public interface BillMapper extends BaseMapper<BillEntity> {
      * @return
      */
     List<StatisticsDetail> billStatistics(BillStatisticsRequest request);
+
+    /**
+     * 年度账单
+     *
+     * @param request
+     * @return
+     */
+    Collection<Collection<YearBillResponse>> billYear(BillYearRequest request);
 }

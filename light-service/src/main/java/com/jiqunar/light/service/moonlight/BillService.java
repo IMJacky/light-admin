@@ -3,15 +3,13 @@ package com.jiqunar.light.service.moonlight;
 import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiqunar.light.model.request.PageRequest;
-import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
-import com.jiqunar.light.model.request.moonlight.BillEditRequest;
-import com.jiqunar.light.model.request.moonlight.BillListRequest;
-import com.jiqunar.light.model.request.moonlight.BillStatisticsRequest;
+import com.jiqunar.light.model.request.moonlight.*;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.PageResponse;
 import com.jiqunar.light.model.response.moonlight.BillEditResponse;
 import com.jiqunar.light.model.response.moonlight.BillListResponse;
 import com.jiqunar.light.model.response.moonlight.BillStatisticsResponse;
+import com.jiqunar.light.model.response.moonlight.YearBillResponse;
 
 /**
  * 账单信息 服务类
@@ -59,4 +57,12 @@ public interface BillService extends IService<BillEntity> {
      * @return
      */
     BillStatisticsResponse billStatistics(BillStatisticsRequest request);
+
+    /**
+     * 年度账单
+     *
+     * @param request
+     * @return
+     */
+    YearBillResponse billYear(BillYearRequest request);
 }

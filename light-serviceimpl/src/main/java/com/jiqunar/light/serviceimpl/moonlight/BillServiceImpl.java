@@ -7,10 +7,7 @@ import com.jiqunar.light.dao.moonlight.WxUserMapper;
 import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.jiqunar.light.dao.moonlight.BillMapper;
 import com.jiqunar.light.model.entity.moonlight.WxUserEntity;
-import com.jiqunar.light.model.request.moonlight.BillEditGetRequest;
-import com.jiqunar.light.model.request.moonlight.BillEditRequest;
-import com.jiqunar.light.model.request.moonlight.BillListRequest;
-import com.jiqunar.light.model.request.moonlight.BillStatisticsRequest;
+import com.jiqunar.light.model.request.moonlight.*;
 import com.jiqunar.light.model.response.BaseResponse;
 import com.jiqunar.light.model.response.moonlight.*;
 import com.jiqunar.light.service.moonlight.BillService;
@@ -280,6 +277,64 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
         response.setStatisticsDetailList(statisticsDetailList);
         response.setEarningAmount(statisticsDetailList.stream().map(e -> e.getEarningAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
         response.setExpenseAmount(statisticsDetailList.stream().map(e -> e.getExpenseAmount()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        return response;
+    }
+
+    /**
+     * 年度账单
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public YearBillResponse billYear(BillYearRequest request) {
+        YearBillResponse response = new YearBillResponse();
+        Collection<Collection<YearBillResponse>> billYearCollection = billMapper.billYear(request);
+        for (int i = 0; i < billYearCollection.size(); i++) {
+            YearBillResponse yearBillResponse = billYearCollection.stream().skip(i).findFirst().get().stream().findFirst().get();
+            switch (i) {
+                case 0:
+                    response.setYearBillCount(yearBillResponse.getYearBillCount());
+                    response.setYearBillAmount(yearBillResponse.getYearBillAmount());
+                    break;
+                case 1:
+                    response.setYearBillAlipayCount(yearBillResponse.getYearBillAlipayCount());
+                    response.setYearBillAlipayAmount(yearBillResponse.getYearBillAlipayAmount());
+                    break;
+                case 2:
+                    response.setYearBillWepayCount(yearBillResponse.getYearBillWepayCount());
+                    response.setYearBillWepayAmount(yearBillResponse.getYearBillWepayAmount());
+                    break;
+                case 3:
+                    response.setYearExpenseCount(yearBillResponse.getYearExpenseCount());
+                    response.setYearExpenseAmount(yearBillResponse.getYearExpenseAmount());
+                    break;
+                case 4:
+                    response.setYearEarningCount(yearBillResponse.getYearEarningCount());
+                    response.setYearEarningAmount(yearBillResponse.getYearEarningAmount());
+                    break;
+                case 5:
+                    response.setMonthExpenseMost(yearBillResponse.getMonthExpenseMost());
+                    response.setMonthExpenseMostAmount(yearBillResponse.getMonthExpenseMostAmount());
+                    break;
+                case 6:
+                    response.setBossMost(yearBillResponse.getBossMost());
+                    response.setBossMostCount(yearBillResponse.getBossMostCount());
+                    break;
+                case 7:
+                    response.setTbExpenseAmount(yearBillResponse.getTbExpenseAmount());
+                    response.setTbExpenseCount(yearBillResponse.getTbExpenseCount());
+                    break;
+                case 8:
+                    response.setWxhbSendAmount(yearBillResponse.getWxhbSendAmount());
+                    response.setWxhbSendCount(yearBillResponse.getWxhbSendCount());
+                    break;
+                case 9:
+                    response.setWxhbReceiveAmount(yearBillResponse.getWxhbReceiveAmount());
+                    response.setWxhbReceiveCount(yearBillResponse.getWxhbReceiveCount());
+                    break;
+            }
+        }
         return response;
     }
 }

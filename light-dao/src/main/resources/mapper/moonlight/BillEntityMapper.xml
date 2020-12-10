@@ -48,5 +48,52 @@
             GROUP BY DATE_FORMAT(bill_date,#{statisticsTypeFormat})
             ORDER BY bill_date
     </select>
-
+    <resultMap id="yearBillMap" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap1" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap2" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap3" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap4" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap5" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap6" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap7" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap8" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap9" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <select id="billYear" resultMap="yearBillMap,yearBillMap1,yearBillMap2,yearBillMap3,yearBillMap4,yearBillMap5,yearBillMap6,yearBillMap7,yearBillMap8,yearBillMap9" resultType="java.util.Collection">
+        SELECT COUNT(1) yearBillCount, SUM(amount) yearBillAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020;
+        SELECT COUNT(1) yearBillAlipayCount, SUM(amount) yearBillAlipayAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND tag='支付宝';
+        SELECT COUNT(1) yearBillWepayCount, SUM(amount) yearBillWepayAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND tag='微信';
+        SELECT COUNT(1) yearExpenseCount, SUM(amount) yearExpenseAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND bill_type=0;
+        SELECT COUNT(1) yearEarning_count, SUM(amount) yearEarning_amount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND bill_type=1;
+        SELECT DATE_FORMAT(bill_date,'%m') monthExpenseMost, SUM(amount) monthExpenseMostAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND bill_type=0
+        GROUP BY DATE_FORMAT(bill_date,'%Y-%m')
+        ORDER BY SUM(amount) DESC
+        LIMIT 1;
+        SELECT boss bossMost, COUNT(1) bossMostCount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND bill_type=0
+        GROUP BY boss
+        ORDER BY COUNT(1) DESC
+        LIMIT 1;
+        SELECT COUNT(1) tbExpenseCount, SUM(amount) tbExpenseAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND tag='支付宝' AND bill_type=0 AND sub_tag='淘宝';
+        SELECT COUNT(1) wxhbSendCount, SUM(amount) wxhbSendAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND tag='微信' AND bill_type=0 AND sub_tag LIKE '%红包%';
+        SELECT COUNT(1) wxhbReceiveCount, SUM(amount) wxhbReceiveAmount
+        FROM bill
+        WHERE open_id='oL4-g4iSgPrqX3n0wektxb1MBzxw' AND DATE_FORMAT(bill_date,'%Y')=2020 AND tag='微信' AND bill_type=1 AND sub_tag LIKE '%红包%';
+    </select>
 </mapper>
