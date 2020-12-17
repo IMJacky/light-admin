@@ -1,9 +1,12 @@
 package com.jiqunar.light.controller;
 
 import com.jiqunar.light.common.DateUtils;
+import com.jiqunar.light.common.DesUtils;
 import com.jiqunar.light.common.RedistUtils;
 import com.jiqunar.light.model.mq.MQConfig;
+import com.jiqunar.light.model.request.moonlight.BillYearRequest;
 import com.jiqunar.light.model.response.BaseResponse;
+import com.jiqunar.light.service.moonlight.BillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -12,9 +15,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -44,6 +45,22 @@ public class TestController {
 
     @Autowired
     private MQConfig mqConfig;
+
+    @Autowired
+    private BillService billService;
+
+    /**
+     * 年度账单（分享）
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/billYearShare")
+    @ApiOperation("年度账单（分享）")
+    public BaseResponse billYearShare(@RequestBody BillYearRequest request) {
+        request.setOpenId(DesUtils.decrypt(DesUtils.DEFAULT_PASSWORD, request.getEncrypteOpenId()));
+        return BaseResponse.success(billService.billYear(request));
+    }
 
     /**
      * 测试随机数

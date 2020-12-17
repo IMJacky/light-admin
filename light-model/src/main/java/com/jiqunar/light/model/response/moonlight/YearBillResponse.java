@@ -16,6 +16,11 @@ import java.math.BigDecimal;
 @ApiModel(value = "年度账单实体", description = "年度账单实体")
 public class YearBillResponse {
     /**
+     * 加密的openid
+     */
+    @ApiModelProperty(value = "加密的openid")
+    private String encryptOpenId;
+    /**
      * 交易总数量
      */
     @ApiModelProperty(value = "交易总数量")

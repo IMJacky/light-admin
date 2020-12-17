@@ -3,6 +3,7 @@ package com.jiqunar.light.serviceimpl.moonlight;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jiqunar.light.common.DateUtils;
+import com.jiqunar.light.common.DesUtils;
 import com.jiqunar.light.dao.moonlight.WxUserMapper;
 import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.jiqunar.light.dao.moonlight.BillMapper;
@@ -289,50 +290,53 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     @Override
     public YearBillResponse billYear(BillYearRequest request) {
         YearBillResponse response = new YearBillResponse();
+        response.setEncryptOpenId(DesUtils.encrypt(DesUtils.DEFAULT_PASSWORD, request.getOpenId()));
         Collection<Collection<YearBillResponse>> billYearCollection = billMapper.billYear(request);
         for (int i = 0; i < billYearCollection.size(); i++) {
-            YearBillResponse yearBillResponse = billYearCollection.stream().skip(i).findFirst().get().stream().findFirst().get();
-            switch (i) {
-                case 0:
-                    response.setYearBillCount(yearBillResponse.getYearBillCount());
-                    response.setYearBillAmount(yearBillResponse.getYearBillAmount());
-                    break;
-                case 1:
-                    response.setYearBillAlipayCount(yearBillResponse.getYearBillAlipayCount());
-                    response.setYearBillAlipayAmount(yearBillResponse.getYearBillAlipayAmount());
-                    break;
-                case 2:
-                    response.setYearBillWepayCount(yearBillResponse.getYearBillWepayCount());
-                    response.setYearBillWepayAmount(yearBillResponse.getYearBillWepayAmount());
-                    break;
-                case 3:
-                    response.setYearExpenseCount(yearBillResponse.getYearExpenseCount());
-                    response.setYearExpenseAmount(yearBillResponse.getYearExpenseAmount());
-                    break;
-                case 4:
-                    response.setYearEarningCount(yearBillResponse.getYearEarningCount());
-                    response.setYearEarningAmount(yearBillResponse.getYearEarningAmount());
-                    break;
-                case 5:
-                    response.setMonthExpenseMost(yearBillResponse.getMonthExpenseMost());
-                    response.setMonthExpenseMostAmount(yearBillResponse.getMonthExpenseMostAmount());
-                    break;
-                case 6:
-                    response.setBossMost(yearBillResponse.getBossMost());
-                    response.setBossMostCount(yearBillResponse.getBossMostCount());
-                    break;
-                case 7:
-                    response.setTbExpenseAmount(yearBillResponse.getTbExpenseAmount());
-                    response.setTbExpenseCount(yearBillResponse.getTbExpenseCount());
-                    break;
-                case 8:
-                    response.setWxhbSendAmount(yearBillResponse.getWxhbSendAmount());
-                    response.setWxhbSendCount(yearBillResponse.getWxhbSendCount());
-                    break;
-                case 9:
-                    response.setWxhbReceiveAmount(yearBillResponse.getWxhbReceiveAmount());
-                    response.setWxhbReceiveCount(yearBillResponse.getWxhbReceiveCount());
-                    break;
+            if (billYearCollection.stream().skip(i).findFirst().get().stream().findFirst().isPresent()) {
+                YearBillResponse yearBillResponse = billYearCollection.stream().skip(i).findFirst().get().stream().findFirst().get();
+                switch (i) {
+                    case 0:
+                        response.setYearBillCount(yearBillResponse.getYearBillCount());
+                        response.setYearBillAmount(yearBillResponse.getYearBillAmount());
+                        break;
+                    case 1:
+                        response.setYearBillAlipayCount(yearBillResponse.getYearBillAlipayCount());
+                        response.setYearBillAlipayAmount(yearBillResponse.getYearBillAlipayAmount());
+                        break;
+                    case 2:
+                        response.setYearBillWepayCount(yearBillResponse.getYearBillWepayCount());
+                        response.setYearBillWepayAmount(yearBillResponse.getYearBillWepayAmount());
+                        break;
+                    case 3:
+                        response.setYearExpenseCount(yearBillResponse.getYearExpenseCount());
+                        response.setYearExpenseAmount(yearBillResponse.getYearExpenseAmount());
+                        break;
+                    case 4:
+                        response.setYearEarningCount(yearBillResponse.getYearEarningCount());
+                        response.setYearEarningAmount(yearBillResponse.getYearEarningAmount());
+                        break;
+                    case 5:
+                        response.setMonthExpenseMost(yearBillResponse.getMonthExpenseMost());
+                        response.setMonthExpenseMostAmount(yearBillResponse.getMonthExpenseMostAmount());
+                        break;
+                    case 6:
+                        response.setBossMost(yearBillResponse.getBossMost());
+                        response.setBossMostCount(yearBillResponse.getBossMostCount());
+                        break;
+                    case 7:
+                        response.setTbExpenseAmount(yearBillResponse.getTbExpenseAmount());
+                        response.setTbExpenseCount(yearBillResponse.getTbExpenseCount());
+                        break;
+                    case 8:
+                        response.setWxhbSendAmount(yearBillResponse.getWxhbSendAmount());
+                        response.setWxhbSendCount(yearBillResponse.getWxhbSendCount());
+                        break;
+                    case 9:
+                        response.setWxhbReceiveAmount(yearBillResponse.getWxhbReceiveAmount());
+                        response.setWxhbReceiveCount(yearBillResponse.getWxhbReceiveCount());
+                        break;
+                }
             }
         }
         return response;

@@ -20,6 +20,10 @@ public class BaseWxRequest {
     /**
      * 微信openid
      */
-    @NotBlank(message = "openid不能为空")
     private String openId;
+
+    /**
+     * 加密的微信openid
+     */
+    private String encrypteOpenId;
 }
