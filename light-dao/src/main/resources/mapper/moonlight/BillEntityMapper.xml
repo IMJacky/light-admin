@@ -58,7 +58,9 @@
     <resultMap id="yearBillMap7" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
     <resultMap id="yearBillMap8" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
     <resultMap id="yearBillMap9" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
-    <select id="billYear" resultMap="yearBillMap,yearBillMap1,yearBillMap2,yearBillMap3,yearBillMap4,yearBillMap5,yearBillMap6,yearBillMap7,yearBillMap8,yearBillMap9" resultType="java.util.Collection">
+    <resultMap id="yearBillMap10" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <resultMap id="yearBillMap11" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
+    <select id="billYear" resultMap="yearBillMap,yearBillMap1,yearBillMap2,yearBillMap3,yearBillMap4,yearBillMap5,yearBillMap6,yearBillMap7,yearBillMap8,yearBillMap9,yearBillMap10,yearBillMap11" resultType="java.util.Collection">
         SELECT COUNT(1) yearBillCount, SUM(amount) yearBillAmount
         FROM bill
         WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year};
@@ -95,5 +97,16 @@
         SELECT COUNT(1) wxhbReceiveCount, SUM(amount) wxhbReceiveAmount
         FROM bill
         WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='微信' AND bill_type=1 AND sub_tag LIKE '%红包%';
+        SELECT COUNT(1) bossTotalCount
+        FROM(
+        SELECT boss
+        FROM bill
+        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
+        GROUP BY boss) AS A;
+        SELECT amount maxAmount,boss maxAmountBoss
+        FROM bill
+        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
+        ORDER BY amount DESC
+        LIMIT 1;
     </select>
 </mapper>

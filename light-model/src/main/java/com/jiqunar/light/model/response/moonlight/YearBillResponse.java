@@ -139,4 +139,22 @@ public class YearBillResponse {
      */
     @ApiModelProperty(value = "收到的微信红包总额")
     private BigDecimal wxhbReceiveAmount;
+
+    /**
+     * 光顾老板的总个数
+     */
+    @ApiModelProperty(value = "光顾老板的总个数")
+    private Integer bossTotalCount;
+
+    /**
+     * 最大的一笔支出金额
+     */
+    @ApiModelProperty(value = "最大的一笔支出金额")
+    private BigDecimal maxAmount;
+
+    /**
+     * 最大的一笔支出金额boss
+     */
+    @ApiModelProperty(value = "最大的一笔支出金额boss")
+    private String maxAmountBoss;
 }

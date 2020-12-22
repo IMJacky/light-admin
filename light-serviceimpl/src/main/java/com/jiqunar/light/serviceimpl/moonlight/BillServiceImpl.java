@@ -336,6 +336,13 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
                         response.setWxhbReceiveAmount(yearBillResponse.getWxhbReceiveAmount());
                         response.setWxhbReceiveCount(yearBillResponse.getWxhbReceiveCount());
                         break;
+                    case 10:
+                        response.setBossTotalCount(yearBillResponse.getBossTotalCount());
+                        break;
+                    case 11:
+                        response.setMaxAmount(yearBillResponse.getMaxAmount());
+                        response.setMaxAmountBoss(yearBillResponse.getMaxAmountBoss());
+                        break;
                 }
             }
         }
