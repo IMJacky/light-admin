@@ -25,5 +25,5 @@ public class BaseWxRequest {
     /**
      * 加密的微信openid
      */
-    private String encrypteOpenId;
+    private String encryptOpenId;
 }

@@ -58,7 +58,7 @@ public class TestController {
     @PostMapping("/billYearShare")
     @ApiOperation("年度账单（分享）")
     public BaseResponse billYearShare(@RequestBody BillYearRequest request) {
-        request.setOpenId(DesUtils.decrypt(DesUtils.DEFAULT_PASSWORD, request.getEncrypteOpenId()));
+        request.setOpenId(DesUtils.decrypt(DesUtils.DEFAULT_PASSWORD, request.getEncryptOpenId()));
         return BaseResponse.success(billService.billYear(request));
     }
 
