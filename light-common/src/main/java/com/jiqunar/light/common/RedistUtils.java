@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * redis帮助类
+ *
  * @author jieguang.wang
  * @date 2020/5/7 17:10
  */
@@ -26,6 +27,18 @@ public class RedistUtils {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    /**
+     * 自增
+     *
+     * @param key key
+     */
+    public long inc(Object key) {
+        if (verifyParam(key)) {
+            return redisTemplate.opsForValue().increment(key);
+        }
+        return 0;
+    }
 
     /**
      * 添加缓存

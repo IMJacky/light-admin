@@ -27,7 +27,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-                id,
+        id
+        ,
                 creater_id,
                 creater_name,
                 create_date,
@@ -36,17 +37,23 @@
                 update_date,
                 is_deleted,
             open_id, union_id, boss, product,order_id, bill_date, bill_type, amount, tag, sub_tag, description
-        </sql>
+    </sql>
+    <update id="updateSaleCount">
+        update bill
+        set updater_id=updater_id + 1
+        where id = #{id}
+    </update>
     <select id="billStatistics"
             resultType="com.jiqunar.light.model.response.moonlight.StatisticsDetail">
-            SELECT SUM(IF(bill_type=0,amount,0)) AS expenseAmount,
-            SUM(IF(bill_type=1,amount,0)) AS earningAmount,
-            DATE_FORMAT(bill_date,#{statisticsTypeFormat}) AS 'desc'
-            FROM bill
-            where bill_date &gt; #{startDate} and bill_date &lt; #{endDate}
-            and open_id=#{openId}
-            GROUP BY DATE_FORMAT(bill_date,#{statisticsTypeFormat})
-            ORDER BY bill_date
+        SELECT SUM(IF(bill_type = 0, amount, 0)) AS expenseAmount,
+               SUM(IF(bill_type = 1, amount, 0)) AS earningAmount,
+               DATE_FORMAT(bill_date, #{statisticsTypeFormat}) AS 'desc'
+        FROM bill
+        where bill_date &gt; #{startDate}
+          and bill_date &lt; #{endDate}
+          and open_id = #{openId}
+        GROUP BY DATE_FORMAT(bill_date, #{statisticsTypeFormat})
+        ORDER BY bill_date
     </select>
     <resultMap id="yearBillMap" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
     <resultMap id="yearBillMap1" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
@@ -60,53 +67,81 @@
     <resultMap id="yearBillMap9" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
     <resultMap id="yearBillMap10" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
     <resultMap id="yearBillMap11" type="com.jiqunar.light.model.response.moonlight.YearBillResponse"/>
-    <select id="billYear" resultMap="yearBillMap,yearBillMap1,yearBillMap2,yearBillMap3,yearBillMap4,yearBillMap5,yearBillMap6,yearBillMap7,yearBillMap8,yearBillMap9,yearBillMap10,yearBillMap11" resultType="java.util.Collection">
+    <select id="billYear"
+            resultMap="yearBillMap,yearBillMap1,yearBillMap2,yearBillMap3,yearBillMap4,yearBillMap5,yearBillMap6,yearBillMap7,yearBillMap8,yearBillMap9,yearBillMap10,yearBillMap11"
+            resultType="java.util.Collection">
         SELECT COUNT(1) yearBillCount, SUM(amount) yearBillAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year};
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year};
         SELECT COUNT(1) yearBillAlipayCount, SUM(amount) yearBillAlipayAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='支付宝';
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND tag = '支付宝';
         SELECT COUNT(1) yearBillWepayCount, SUM(amount) yearBillWepayAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='微信';
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND tag = '微信';
         SELECT COUNT(1) yearExpenseCount, SUM(amount) yearExpenseAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0;
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND bill_type = 0;
         SELECT COUNT(1) yearEarning_count, SUM(amount) yearEarning_amount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=1;
-        SELECT DATE_FORMAT(bill_date,'%m') monthExpenseMost, SUM(amount) monthExpenseMostAmount
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND bill_type = 1;
+        SELECT DATE_FORMAT(bill_date, '%m') monthExpenseMost, SUM(amount) monthExpenseMostAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
-        GROUP BY DATE_FORMAT(bill_date,'%Y-%m')
-        ORDER BY SUM(amount) DESC
-        LIMIT 1;
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND bill_type = 0
+        GROUP BY DATE_FORMAT(bill_date, '%Y-%m')
+        ORDER BY SUM(amount) DESC LIMIT 1;
         SELECT boss bossMost, COUNT(1) bossMostCount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND bill_type = 0
         GROUP BY boss
-        ORDER BY COUNT(1) DESC
-        LIMIT 1;
+        ORDER BY COUNT(1) DESC LIMIT 1;
         SELECT COUNT(1) tbExpenseCount, SUM(amount) tbExpenseAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='支付宝' AND bill_type=0 AND sub_tag='淘宝';
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND tag = '支付宝'
+          AND bill_type = 0
+          AND sub_tag = '淘宝';
         SELECT COUNT(1) wxhbSendCount, SUM(amount) wxhbSendAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='微信' AND bill_type=0 AND sub_tag LIKE '%红包%';
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND tag = '微信'
+          AND bill_type = 0
+          AND sub_tag LIKE '%红包%';
         SELECT COUNT(1) wxhbReceiveCount, SUM(amount) wxhbReceiveAmount
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND tag='微信' AND bill_type=1 AND sub_tag LIKE '%红包%';
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND tag = '微信'
+          AND bill_type = 1
+          AND sub_tag LIKE '%红包%';
         SELECT COUNT(1) bossTotalCount
-        FROM(
-        SELECT boss
+        FROM (
+                 SELECT boss
+                 FROM bill
+                 WHERE open_id = #{openId}
+                   AND DATE_FORMAT(bill_date, '%Y') = #{year}
+                   AND bill_type = 0
+                 GROUP BY boss) AS A;
+        SELECT amount maxAmount, boss maxAmountBoss
         FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
-        GROUP BY boss) AS A;
-        SELECT amount maxAmount,boss maxAmountBoss
-        FROM bill
-        WHERE open_id=#{openId} AND DATE_FORMAT(bill_date,'%Y')=#{year} AND bill_type=0
-        ORDER BY amount DESC
-        LIMIT 1;
+        WHERE open_id = #{openId}
+          AND DATE_FORMAT(bill_date, '%Y') = #{year}
+          AND bill_type = 0
+        ORDER BY amount DESC LIMIT 1;
     </select>
 </mapper>

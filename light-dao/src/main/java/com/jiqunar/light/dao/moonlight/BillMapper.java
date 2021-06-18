@@ -34,4 +34,12 @@ public interface BillMapper extends BaseMapper<BillEntity> {
      * @return
      */
     Collection<Collection<YearBillResponse>> billYear(BillYearRequest request);
+
+    /**
+     * 更新售卖数量
+     *
+     * @param id
+     * @return
+     */
+    int updateSaleCount(Long id);
 }

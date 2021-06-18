@@ -2,7 +2,9 @@ package com.jiqunar.light.controller;
 
 import com.jiqunar.light.common.DateUtils;
 import com.jiqunar.light.common.DesUtils;
+import com.jiqunar.light.common.FunnelLimitUtil;
 import com.jiqunar.light.common.RedistUtils;
+import com.jiqunar.light.model.entity.moonlight.BillEntity;
 import com.jiqunar.light.model.mq.MQConfig;
 import com.jiqunar.light.model.request.moonlight.BillYearRequest;
 import com.jiqunar.light.model.response.BaseResponse;
@@ -11,6 +13,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 /**
  * 权限相关接口
@@ -49,6 +56,12 @@ public class TestController {
     @Autowired
     private BillService billService;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
+    private static final FunnelLimitUtil funnelLimitUtil = new FunnelLimitUtil(600, 100);
+    private Logger logger = LoggerFactory.getLogger(TestController.class);
+
     /**
      * 年度账单（分享）
      *
@@ -69,19 +82,74 @@ public class TestController {
      */
     @GetMapping("/testRandom")
     @ApiOperation("测试随机数")
-    public BaseResponse testRandom() {
-        Integer[] source = {12, 5, 6, 78, 44, 99};
-        for (int i = 0; i < source.length; i++) {
-            for (int j = i; j < source.length; j++) {
-                if (source[i] > source[j]) {
-                    int temp = source[i];
-                    source[i] = source[j];
-                    source[j] = temp;
-                }
+    public BaseResponse testRandom() throws InterruptedException {
+        BillEntity billEntity = billService.getById(14539L);
+//        if (billEntity.getUpdaterId() >= billEntity.getCreaterId()) {
+//            return BaseResponse.fail("没有库存了");
+//        } else {
+//            Thread.sleep(50);
+//            billEntity.setUpdaterId(billEntity.getUpdaterId() + 1);
+//            billService.updateById(billEntity);
+//            return BaseResponse.success("抢购成功");
+//        }
+
+//        String incKey = "incKey_" + billEntity.getId();
+//        Long saleCount = redistUtils.get(incKey, Long.class);
+//        if (saleCount != null && saleCount >= billEntity.getCreaterId()) {
+//            return BaseResponse.fail("没有库存了");
+//        } else {
+//            Thread.sleep(50);
+//            redistUtils.inc(incKey);
+//            return BaseResponse.success("抢购成功");
+//        }
+
+//        String incKey = "incKey_" + billEntity.getId();
+//        Long saleCount = redistUtils.inc(incKey);
+//        if (saleCount != null && saleCount > billEntity.getCreaterId()) {
+//            return BaseResponse.fail("没有库存了");
+//        } else {
+//            Thread.sleep(50);
+//            int result = billService.updateSaleCount(billEntity.getId());
+//            return BaseResponse.success("抢购成功");
+//        }
+        String redissonKey = "redissonKey_" + billEntity.getId();
+        RLock redissonClientLock = redissonClient.getLock(redissonKey);
+        try {
+            redissonClientLock.lock();
+            String incKey = "incKey_" + billEntity.getId();
+            Long saleCount = redistUtils.get(incKey, Long.class);
+            if (saleCount != null && saleCount >= billEntity.getCreaterId()) {
+                return BaseResponse.fail("没有库存了");
+            } else {
+                Thread.sleep(50);
+                redistUtils.inc(incKey);
+                int result = billService.updateSaleCount(billEntity.getId());
+                return BaseResponse.success("抢购成功");
             }
+        } finally {
+            redissonClientLock.unlock();
         }
-        Double randomDouble = RandomUtils.nextDouble(0, 1);
-        return BaseResponse.success(source);
+
+//        logger.info(String.valueOf(funnelLimitUtil.addWater(1)));
+//        // 耗时30ms的方法
+//        Thread.sleep(300);
+//        return BaseResponse.success("complete");
+
+//        if (!funnelLimitUtil.addWater(1)) {
+//            return BaseResponse.fail("被限流");
+//        }
+//        Integer[] source = {12, 5, 6, 78, 44, 99};
+//        for (int i = 0; i < source.length; i++) {
+//            for (int j = i; j < source.length; j++) {
+//                if (source[i] > source[j]) {
+//                    int temp = source[i];
+//                    source[i] = source[j];
+//                    source[j] = temp;
+//                }
+//            }
+//        }
+//        Double randomDouble = RandomUtils.nextDouble(0, 1);
+//        return BaseResponse.success(source);
     }
 
     /**
