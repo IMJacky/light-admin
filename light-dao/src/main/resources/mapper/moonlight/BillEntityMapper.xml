@@ -43,6 +43,12 @@
         set updater_id=updater_id + 1
         where id = #{id}
     </update>
+    <update id="updateSaleCountByUsed">
+        update bill
+        set updater_id=updater_id + 1
+        where id = #{id}
+          and updater_id = #{usedCount}
+    </update>
     <select id="billStatistics"
             resultType="com.jiqunar.light.model.response.moonlight.StatisticsDetail">
         SELECT SUM(IF(bill_type = 0, amount, 0)) AS expenseAmount,

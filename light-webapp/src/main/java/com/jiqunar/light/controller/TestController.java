@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -61,6 +62,7 @@ public class TestController {
 
     private static final FunnelLimitUtil funnelLimitUtil = new FunnelLimitUtil(600, 100);
     private Logger logger = LoggerFactory.getLogger(TestController.class);
+    private static Map<Long, BillEntity> giftMap = new ConcurrentHashMap<>();
 
     /**
      * 年度账单（分享）
@@ -83,16 +85,21 @@ public class TestController {
     @GetMapping("/testRandom")
     @ApiOperation("测试随机数")
     public BaseResponse testRandom() throws InterruptedException {
-        BillEntity billEntity = billService.getById(14539L);
-//        if (billEntity.getUpdaterId() >= billEntity.getCreaterId()) {
-//            return BaseResponse.fail("没有库存了");
-//        } else {
-//            Thread.sleep(50);
-//            billEntity.setUpdaterId(billEntity.getUpdaterId() + 1);
-//            billService.updateById(billEntity);
-//            return BaseResponse.success("抢购成功");
-//        }
+        // synchronized 直接使用类锁
 
+        BillEntity billEntity = giftMap.get(14539L);
+        synchronized (billEntity) {
+            if (billEntity.getUpdaterId() >= billEntity.getCreaterId()) {
+                return BaseResponse.fail("没有库存了");
+            } else {
+                Thread.sleep(50);
+                int result = billService.updateSaleCount(billEntity.getId(), billEntity.getUpdaterId().intValue());
+                if (result > 0) {
+                    billEntity.setUpdaterId(billEntity.getUpdaterId() + 1);
+                }
+                return BaseResponse.success(result > 0 ? "抢购成功" : "抢购失败");
+            }
+        }
 //        String incKey = "incKey_" + billEntity.getId();
 //        Long saleCount = redistUtils.get(incKey, Long.class);
 //        if (saleCount != null && saleCount >= billEntity.getCreaterId()) {
@@ -112,23 +119,24 @@ public class TestController {
 //            int result = billService.updateSaleCount(billEntity.getId());
 //            return BaseResponse.success("抢购成功");
 //        }
-        String redissonKey = "redissonKey_" + billEntity.getId();
-        RLock redissonClientLock = redissonClient.getLock(redissonKey);
-        try {
-            redissonClientLock.lock();
-            String incKey = "incKey_" + billEntity.getId();
-            Long saleCount = redistUtils.get(incKey, Long.class);
-            if (saleCount != null && saleCount >= billEntity.getCreaterId()) {
-                return BaseResponse.fail("没有库存了");
-            } else {
-                Thread.sleep(50);
-                redistUtils.inc(incKey);
-                int result = billService.updateSaleCount(billEntity.getId());
-                return BaseResponse.success("抢购成功");
-            }
-        } finally {
-            redissonClientLock.unlock();
-        }
+
+//        String redissonKey = "redissonKey_" + billEntity.getId();
+//        RLock redissonClientLock = redissonClient.getLock(redissonKey);
+//        try {
+//            redissonClientLock.lock();
+//            String incKey = "incKey_" + billEntity.getId();
+//            Long saleCount = redistUtils.get(incKey, Long.class);
+//            if (saleCount != null && saleCount >= billEntity.getCreaterId()) {
+//                return BaseResponse.fail("没有库存了");
+//            } else {
+//                Thread.sleep(50);
+//                redistUtils.inc(incKey);
+//                int result = billService.updateSaleCount(billEntity.getId());
+//                return BaseResponse.success("抢购成功");
+//            }
+//        } finally {
+//            redissonClientLock.unlock();
+//        }
 
 //        logger.info(String.valueOf(funnelLimitUtil.addWater(1)));
 //        // 耗时30ms的方法
@@ -212,6 +220,7 @@ public class TestController {
     @GetMapping("/webflux")
     @ApiOperation("webflux测试")
     public Mono<BaseResponse> webflux() {
+        giftMap.put(14539L, billService.getById(14539L));
         return Mono.just(BaseResponse.success("webflux测试：Mono.just"));
     }
 

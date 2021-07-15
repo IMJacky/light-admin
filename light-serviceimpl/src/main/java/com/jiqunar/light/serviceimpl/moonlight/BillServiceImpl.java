@@ -359,4 +359,16 @@ public class BillServiceImpl extends ServiceImpl<BillMapper, BillEntity> impleme
     public int updateSaleCount(Long id) {
         return billMapper.updateSaleCount(id);
     }
+
+    /**
+     * 更新售卖数量
+     *
+     * @param id
+     * @param usedCount
+     * @return
+     */
+    @Override
+    public int updateSaleCount(Long id, Integer usedCount) {
+        return billMapper.updateSaleCountByUsed(id, usedCount);
+    }
 }

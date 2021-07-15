@@ -1,6 +1,7 @@
 package com.jiqunar.light.controller.upms;
 
 import com.alibaba.druid.util.DruidWebUtils;
+import com.jiqunar.light.common.IpUtils;
 import com.jiqunar.light.controller.BaseController;
 import com.jiqunar.light.model.request.upms.LoginRequest;
 import com.jiqunar.light.model.response.BaseResponse;
@@ -39,7 +40,7 @@ public class AuthController extends BaseController {
     @PostMapping("/login")
     @ApiOperation("登录")
     public BaseResponse<LoginResponse> login(@RequestBody @Validated LoginRequest request) {
-        String ipAddress = DruidWebUtils.getRemoteAddr(httpServletRequest);
+        String ipAddress = IpUtils.getRealIP(httpServletRequest);
         String userAgent = httpServletRequest.getHeader("user-agent");
         request.setLogMessage(String.format("IP地址：%s\n浏览器信息：%s", ipAddress, userAgent));
         return BaseResponse.success(authService.login(request));

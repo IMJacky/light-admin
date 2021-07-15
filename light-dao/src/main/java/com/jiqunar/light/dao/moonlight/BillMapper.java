@@ -42,4 +42,13 @@ public interface BillMapper extends BaseMapper<BillEntity> {
      * @return
      */
     int updateSaleCount(Long id);
+
+    /**
+     * 更新售卖数量
+     *
+     * @param id
+     * @param usedCount 已用数量
+     * @return
+     */
+    int updateSaleCountByUsed(Long id, Integer usedCount);
 }

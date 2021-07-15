@@ -3,6 +3,7 @@ package com.jiqunar.light.config;
 import com.jiqunar.light.model.response.BaseResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class CustomExceptionConfig {
     /**
      * 全局异常处理
+     *
      * @param e
      * @return
      */
@@ -45,6 +47,7 @@ public class CustomExceptionConfig {
 
     /**
      * form-data参数校验
+     *
      * @param exception
      * @return
      */
@@ -85,5 +88,13 @@ public class CustomExceptionConfig {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public BaseResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         return BaseResponse.invalidParams("缺少请求参数");
+    }
+
+    /**
+     * 参数有误(post方法的body中没有信息)
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public BaseResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return BaseResponse.invalidParams("参数有误");
     }
 }

@@ -66,7 +66,6 @@ public interface BillService extends IService<BillEntity> {
      */
     YearBillResponse billYear(BillYearRequest request);
 
-
     /**
      * 更新售卖数量
      *
@@ -74,4 +73,12 @@ public interface BillService extends IService<BillEntity> {
      * @return
      */
     int updateSaleCount(Long id);
+
+    /**
+     * 更新售卖数量
+     *
+     * @param id
+     * @return
+     */
+    int updateSaleCount(Long id, Integer usedCount);
 }
