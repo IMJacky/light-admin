@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 
 /**
- * 权限相关接口
+ * 测试相关接口
  *
  * @author jieguang.wang
  * @date 2020/6/2 17:17
