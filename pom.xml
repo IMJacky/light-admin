@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <swagger.version>2.9.2</swagger.version>
-        <mysql-connector.version>8.0.20</mysql-connector.version>
+        <mysql-connector.version>8.0.28</mysql-connector.version>
         <druid.version>1.1.22</druid.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <velocity-engine.version>2.2</velocity-engine.version>
